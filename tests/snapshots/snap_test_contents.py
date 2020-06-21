@@ -14,13 +14,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 3,
         'identifier_part_1': 11648,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Abrion',
         'number': 20,
         'position_x': 469,
         'position_y': 642,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -28,13 +28,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 3,
         'identifier_part_1': 11649,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Atrivis',
         'number': 21,
         'position_x': 272,
         'position_y': 96,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -42,13 +42,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11650,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Churba',
         'number': 22,
         'position_x': 132,
         'position_y': 417,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -56,13 +56,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11651,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Corellian',
         'number': 23,
         'position_x': 258,
         'position_y': 394,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -70,13 +70,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11652,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Calaron',
         'number': 24,
         'position_x': 380,
         'position_y': 129,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -84,13 +84,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 3,
         'identifier_part_1': 11653,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Dolomar',
         'number': 25,
         'position_x': 472,
         'position_y': 253,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -98,13 +98,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11654,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Dufilvan',
         'number': 26,
         'position_x': 359,
         'position_y': 663,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -112,13 +112,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 3,
         'identifier_part_1': 11655,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Fakir',
         'number': 27,
         'position_x': 385,
         'position_y': 525,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -126,13 +126,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 2,
         'identifier_part_1': 11656,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Farfin',
         'number': 28,
         'position_x': 587,
         'position_y': 370,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -140,13 +140,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 2,
         'identifier_part_1': 11657,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Glythe',
         'number': 29,
         'position_x': 596,
         'position_y': 253,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -154,13 +154,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 2,
         'identifier_part_1': 11658,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Jospro',
         'number': 30,
         'position_x': 737,
         'position_y': 548,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -168,13 +168,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 2,
         'identifier_part_1': 11659,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Kanchen',
         'number': 31,
         'position_x': 221,
         'position_y': 569,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -182,13 +182,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11660,
         'identifier_part_2': 2,
+        'importance': 2,
         'name': 'Mayagil',
         'number': 32,
         'position_x': 488,
         'position_y': 129,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -196,13 +196,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11661,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Moddell',
         'number': 33,
         'position_x': 191,
         'position_y': 148,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -210,13 +210,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11662,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Orus',
         'number': 34,
         'position_x': 695,
         'position_y': 684,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -224,13 +224,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 2,
         'identifier_part_1': 11663,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Quelli',
         'number': 35,
         'position_x': 113,
         'position_y': 277,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -238,13 +238,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11664,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Sesswenna',
         'number': 36,
         'position_x': 317,
         'position_y': 248,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -252,13 +252,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11665,
         'identifier_part_2': 2,
+        'importance': 1,
         'name': 'Sluis',
         'number': 37,
         'position_x': 526,
         'position_y': 532,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -266,13 +266,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 1,
         'identifier_part_1': 11666,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Sumitra',
         'number': 38,
         'position_x': 717,
         'position_y': 438,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
@@ -280,13 +280,13 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'game_size': 3,
         'identifier_part_1': 11667,
         'identifier_part_2': 2,
+        'importance': 3,
         'name': 'Xappyh',
         'number': 39,
         'position_x': 575,
         'position_y': 755,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3
+        'producing_facility_family_id_one_based': 0
     }
 ]
 
