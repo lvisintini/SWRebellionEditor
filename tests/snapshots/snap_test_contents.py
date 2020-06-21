@@ -11,6 +11,7 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11648,
         'identifier_part_2': 2,
         'name': 'Abrion',
@@ -19,12 +20,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 642,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 3
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11649,
         'identifier_part_2': 2,
         'name': 'Atrivis',
@@ -33,12 +34,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 96,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 3
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11650,
         'identifier_part_2': 2,
         'name': 'Churba',
@@ -47,12 +48,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 417,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11651,
         'identifier_part_2': 2,
         'name': 'Corellian',
@@ -61,12 +62,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 394,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11652,
         'identifier_part_2': 2,
         'name': 'Calaron',
@@ -75,12 +76,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 129,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11653,
         'identifier_part_2': 2,
         'name': 'Dolomar',
@@ -89,12 +90,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 253,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 3
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11654,
         'identifier_part_2': 2,
         'name': 'Dufilvan',
@@ -103,12 +104,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 663,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11655,
         'identifier_part_2': 2,
         'name': 'Fakir',
@@ -117,12 +118,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 525,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 3
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11656,
         'identifier_part_2': 2,
         'name': 'Farfin',
@@ -131,12 +132,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 370,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 2
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11657,
         'identifier_part_2': 2,
         'name': 'Glythe',
@@ -145,12 +146,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 253,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 2
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11658,
         'identifier_part_2': 2,
         'name': 'Jospro',
@@ -159,12 +160,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 548,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 2
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11659,
         'identifier_part_2': 2,
         'name': 'Kanchen',
@@ -173,12 +174,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 569,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 2
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11660,
         'identifier_part_2': 2,
         'name': 'Mayagil',
@@ -187,12 +188,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 129,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'unknown_1': 2
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11661,
         'identifier_part_2': 2,
         'name': 'Moddell',
@@ -201,12 +202,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 148,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11662,
         'identifier_part_2': 2,
         'name': 'Orus',
@@ -215,12 +216,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 684,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11663,
         'identifier_part_2': 2,
         'name': 'Quelli',
@@ -229,12 +230,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 277,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 2
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11664,
         'identifier_part_2': 2,
         'name': 'Sesswenna',
@@ -243,12 +244,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 248,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11665,
         'identifier_part_2': 2,
         'name': 'Sluis',
@@ -257,12 +258,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 532,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'unknown_1': 1
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11666,
         'identifier_part_2': 2,
         'name': 'Sumitra',
@@ -271,12 +272,12 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 438,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'unknown_1': 3
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11667,
         'identifier_part_2': 2,
         'name': 'Xappyh',
@@ -285,8 +286,7 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
         'position_y': 755,
         'producing_facility_family_id': 0,
         'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 3
+        'unknown_1': 3
     }
 ]
 
