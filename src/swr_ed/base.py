@@ -13,6 +13,7 @@ FieldDef = namedtuple('StrucFormatDef', ['format', 'type'])
 
 class SWRDataManager:
     filename = None
+    file_location = 'GData'
     expected_header = None
 
     # Verbatim -> http://forums.swrebellion.com/viewtopic.php?f=3&t=284
@@ -44,9 +45,9 @@ class SWRDataManager:
 
     data_fields_structure = None
 
-    def __init__(self, data_path):
-        self.data_path = data_path
-        self.file_path = os.path.join(data_path, self.filename)
+    def __init__(self, data_path=None):
+        self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
+        self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
         self.header_stream = None
         self.data_stream = None
         self.data_dicts = None
@@ -85,13 +86,13 @@ class SWRDataManager:
 
     def get_name(self, name_id):
         #https://stackoverflow.com/questions/23263599/how-to-extract-128x128-icon-bitmap-data-from-exe-in-python
-        #https://github.com/team5499/pie-2015/blob/master/VrepRobotCPortable/Python/App2/Lib/site-packages/py2exe/resources/StringTables.py
+        #https://github.com/team5499/pie-2015/blob/master/VrepRobotCPortable/Python/App2/Lib/site-packages/py2exe
+        #/resources/StringTables.py
         # general name -> print(c['name'], ' -> ', manager.get_name(c['identifier_part_1'] + 28672))
         # commander name ->  print(c['name'], ' -> ',  manager.get_name(c['identifier_part_1'] + 26624))
         # admiral name -> print(c['name'], ' -> ', manager.get_name(c['identifier_part_1'] + 27648))
-        textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, '..', "TEXTSTRA.DLL"))
+        textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, "TEXTSTRA.DLL"))
         return win32api.LoadString(textstra_lib, name_id)
-
 
 
 class FightersDataManager(SWRDataManager):

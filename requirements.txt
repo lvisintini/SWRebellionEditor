@@ -1,1 +1,4 @@
+pytest==5.4.3
+pytest-snapshot==0.4.1
 pywin32==228
+snapshottest==0.5.1
