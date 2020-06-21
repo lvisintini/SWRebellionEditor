@@ -1,0 +1,50 @@
+import win32api
+import ctypes
+import pywintypes
+... import win32ui
+... import win32gui
+... import win32con
+... import win32api
+... import win32file
+import ctypes
+... import ctypes.util
+PATH = r"C:\Steam\steamapps\common\Star Wars - Rebellion\TEXTSTRA.DLL"
+hlib = win32api.LoadLibrary(PATH)
+ctypes.windll.kernel32.FindResourceW(hlib, 10051)
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+ValueError: Procedure probably called with not enough arguments (4 bytes missing)
+dir(hlib)
+['__abs__', '__add__', '__and__', '__bool__', '__ceil__', '__class__', '__delattr__', '__dir__', '__divmod__', '__doc__', '__eq__', '__float__', '__floor__', '__floordiv__', '__format__', '__ge__', '__getattribute__', '__getnewargs__', '__gt__', '__hash__', '__index__', '__init__', '__init_subclass__', '__int__', '__invert__', '__le__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__', '__neg__', '__new__', '__or__', '__pos__', '__pow__', '__radd__', '__rand__', '__rdivmod__', '__reduce__', '__reduce_ex__', '__repr__', '__rfloordiv__', '__rlshift__', '__rmod__', '__rmul__', '__ror__', '__round__', '__rpow__', '__rrshift__', '__rshift__', '__rsub__', '__rtruediv__', '__rxor__', '__setattr__', '__sizeof__', '__str__', '__sub__', '__subclasshook__', '__truediv__', '__trunc__', '__xor__', 'bit_length', 'conjugate', 'denominator', 'from_bytes', 'imag', 'numerator', 'real', 'to_bytes']
+win32con
+<module 'win32con' from 'C:\\Users\\Luis Visintini\\src\\SWRebellionEditor\\venv\\lib\\site-packages\\win32\\lib\\win32con.py'>
+win32con.RT_STRING
+6
+ctypes.windll.kernel32.FindResourceW(hlib, 10051, win32con.RT_STRING)
+0
+repr(ctypes.windll.kernel32.FindResourceW(hlib, 10051, win32con.RT_STRING))
+'0'
+repr(ctypes.windll.kernel32.FindResourceW(hlib, 10051, win32con.RT_STRING))
+'0'
+icon_names = win32api.EnumResourceNames(hlib, win32con.RT_STRING)
+icon_names
+[305, 337, 338, 353, 354, 355, 358, 359, 360, 361, 362, 369, 370, 371, 372, 373, 386, 387, 388, 389, 390, 391, 392, 393, 394, 401, 403, 404, 405, 406, 513, 529, 545, 553, 565, 581, 585, 597, 601, 613, 617, 629, 633, 645, 649, 677, 678, 681, 682, 705, 706, 707, 709, 713, 721, 723, 725, 726, 727, 729, 730, 737, 738, 739, 740, 741, 742, 743, 744, 745, 746, 753, 754, 755, 756, 757, 758, 759, 760, 761, 762, 769, 770, 771, 772, 773, 786, 787, 898, 899, 1238, 1239, 1240, 1281, 1282, 1283, 1297, 1298, 1299, 1303, 1304, 1305, 1309, 1310, 1313, 1314, 1319, 1320, 1321, 1325, 2049, 2050, 2051, 2052, 2129, 2130, 2131, 2132, 2145, 2150, 2151, 2152, 2153, 2154, 2161, 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2177, 2309, 2313, 2341, 2342, 2345, 2346, 2373, 2377, 2405, 2406, 2409, 2410, 2437, 2441, 2469, 2470, 2473, 2474]
+rebs = ctypes.windll.kernel32.FindResourceW(hlib, 677, win32con.RT_STRING)
+rebs
+268502600
+ctypes.windll.kernel32.SizeofResource(hlib, rebs)
+376
+rec = win32api.LoadResource(hlib, win32con.RT_STRING, 677)
+rec
+b"\x06\x001\x002\x003\x004\x005\x006\x00\x0e\x001\x005\x003\x002\x004\x00 \x00A\x00n\x00t\x00i\x00l\x00l\x00e\x00s\x00\x10\x009\x006\x006\x009\x009\x00 \x00C\x00a\x00l\x00r\x00i\x00s\x00s\x00i\x00a\x00n\x00\t\x00C\x00h\x00e\x00s\x00b\x00a\x00c\x00c\x00a\x00\x0b\x00J\x00a\x00n\x00 \x00D\x00o\x00d\x00o\x00n\x00n\x00a\x00\x0b\x00C\x00r\x00i\x00x\x00 \x00M\x00a\x00d\x00i\x00n\x00e\x00\x0f\x00C\x00a\x00r\x00l\x00i\x00s\x00t\x00 \x00R\x00i\x00e\x00e\x00k\x00a\x00n\x00\x05\x00A\x00f\x00y\x00o\x00n\x00\x07\x00D\x00r\x00a\x00y\x00s\x00o\x00n\x00\r\x00B\x00o\x00r\x00s\x00k\x00 \x00F\x00e\x00y\x00'\x00l\x00y\x00a\x00\r\x00T\x00u\x00r\x00a\x00 \x00R\x00a\x00f\x00t\x00i\x00c\x00a\x00n\x00\x0b\x00B\x00r\x00e\x00n\x00 \x00D\x00e\x00r\x00l\x00i\x00n\x00\x0e\x00G\x00a\x00r\x00m\x00 \x00B\x00e\x00l\x00 \x00I\x00b\x00l\x00i\x00s\x00\x0c\x00T\x00a\x00l\x00o\x00n\x00 \x00K\x00a\x00r\x00r\x00d\x00e\x00\x05\x00N\x00a\x00r\x00r\x00a\x00\n\x00H\x00u\x00o\x00b\x00a\x00 \x00N\x00e\x00v\x00a\x00"
+bytearray(rec)
+bytearray(b"\x06\x001\x002\x003\x004\x005\x006\x00\x0e\x001\x005\x003\x002\x004\x00 \x00A\x00n\x00t\x00i\x00l\x00l\x00e\x00s\x00\x10\x009\x006\x006\x009\x009\x00 \x00C\x00a\x00l\x00r\x00i\x00s\x00s\x00i\x00a\x00n\x00\t\x00C\x00h\x00e\x00s\x00b\x00a\x00c\x00c\x00a\x00\x0b\x00J\x00a\x00n\x00 \x00D\x00o\x00d\x00o\x00n\x00n\x00a\x00\x0b\x00C\x00r\x00i\x00x\x00 \x00M\x00a\x00d\x00i\x00n\x00e\x00\x0f\x00C\x00a\x00r\x00l\x00i\x00s\x00t\x00 \x00R\x00i\x00e\x00e\x00k\x00a\x00n\x00\x05\x00A\x00f\x00y\x00o\x00n\x00\x07\x00D\x00r\x00a\x00y\x00s\x00o\x00n\x00\r\x00B\x00o\x00r\x00s\x00k\x00 \x00F\x00e\x00y\x00\'\x00l\x00y\x00a\x00\r\x00T\x00u\x00r\x00a\x00 \x00R\x00a\x00f\x00t\x00i\x00c\x00a\x00n\x00\x0b\x00B\x00r\x00e\x00n\x00 \x00D\x00e\x00r\x00l\x00i\x00n\x00\x0e\x00G\x00a\x00r\x00m\x00 \x00B\x00e\x00l\x00 \x00I\x00b\x00l\x00i\x00s\x00\x0c\x00T\x00a\x00l\x00o\x00n\x00 \x00K\x00a\x00r\x00r\x00d\x00e\x00\x05\x00N\x00a\x00r\x00r\x00a\x00\n\x00H\x00u\x00o\x00b\x00a\x00 \x00N\x00e\x00v\x00a\x00")
+rec
+b"\x06\x001\x002\x003\x004\x005\x006\x00\x0e\x001\x005\x003\x002\x004\x00 \x00A\x00n\x00t\x00i\x00l\x00l\x00e\x00s\x00\x10\x009\x006\x006\x009\x009\x00 \x00C\x00a\x00l\x00r\x00i\x00s\x00s\x00i\x00a\x00n\x00\t\x00C\x00h\x00e\x00s\x00b\x00a\x00c\x00c\x00a\x00\x0b\x00J\x00a\x00n\x00 \x00D\x00o\x00d\x00o\x00n\x00n\x00a\x00\x0b\x00C\x00r\x00i\x00x\x00 \x00M\x00a\x00d\x00i\x00n\x00e\x00\x0f\x00C\x00a\x00r\x00l\x00i\x00s\x00t\x00 \x00R\x00i\x00e\x00e\x00k\x00a\x00n\x00\x05\x00A\x00f\x00y\x00o\x00n\x00\x07\x00D\x00r\x00a\x00y\x00s\x00o\x00n\x00\r\x00B\x00o\x00r\x00s\x00k\x00 \x00F\x00e\x00y\x00'\x00l\x00y\x00a\x00\r\x00T\x00u\x00r\x00a\x00 \x00R\x00a\x00f\x00t\x00i\x00c\x00a\x00n\x00\x0b\x00B\x00r\x00e\x00n\x00 \x00D\x00e\x00r\x00l\x00i\x00n\x00\x0e\x00G\x00a\x00r\x00m\x00 \x00B\x00e\x00l\x00 \x00I\x00b\x00l\x00i\x00s\x00\x0c\x00T\x00a\x00l\x00o\x00n\x00 \x00K\x00a\x00r\x00r\x00d\x00e\x00\x05\x00N\x00a\x00r\x00r\x00a\x00\n\x00H\x00u\x00o\x00b\x00a\x00 \x00N\x00e\x00v\x00a\x00"
+pywintypes.UnicodeFromRaw(rec)
+"\x06123456\x0e15324 Antilles\x1096699 Calrissian\tChesbacca\x0bJan Dodonna\x0bCrix Madine\x0fCarlist Rieekan\x05Afyon\x07Drayson\rBorsk Fey'lya\rTura Raftican\x0bBren Derlin\x0eGarm Bel Iblis\x0cTalon Karrde\x05Narra\nHuoba Neva"
+win32api.LoadString(hlib, 677)
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+pywintypes.error: (1814, 'LoadString', 'The specified resource name cannot be found in the image file.')
+win32api.LoadString(hlib, 10051)
