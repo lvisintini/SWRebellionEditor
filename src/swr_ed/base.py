@@ -248,8 +248,8 @@ class SectorsDataManager(SWRDataManager):
         ("family_id", FieldDef('I', FieldType.READ_ONLY)),  # usually 146
         ("identifier_part_1", FieldDef('H', FieldType.READ_ONLY)),  # can be used get the name from Textstrat.dll
         ("identifier_part_2", FieldDef('H', FieldType.READ_ONLY)),  # always 2
-        ("importance", FieldDef('I', FieldType.UNKNOWN)),  # 1-high 2-medium 3-low
-        ("game_size", FieldDef('I', FieldType.UNKNOWN)),  # 1-Small 2-Medium 3-Large
+        ("importance", FieldDef('I', FieldType.EDITABLE)),  # 1-high 2-medium 3-low
+        ("game_size", FieldDef('I', FieldType.EDITABLE)),  # 1-Small 2-Medium 3-Large
         ("position_x", FieldDef('H', FieldType.EDITABLE)),
         ("position_y", FieldDef('H', FieldType.EDITABLE)),
     ])
