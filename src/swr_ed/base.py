@@ -3,7 +3,7 @@ import os
 from io import BytesIO
 from collections import namedtuple, OrderedDict
 
-import win32api
+#import win32api
 
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
@@ -13,8 +13,10 @@ FieldDef = namedtuple('StrucFormatDef', ['format', 'type'])
 
 class SWRDataManager:
     filename = None
-    file_location = 'GData'
+    file_location = 'GDATA'
     expected_header = None
+
+    byte_order = '<'  # we assume little-endian https://docs.python.org/3/library/struct.html#struct-alignment
 
     # Verbatim -> http://forums.swrebellion.com/viewtopic.php?f=3&t=284
     # The normal gamedata files (all *sd.dat except basicsd.dat.) have a common header. It is four DWORD long:
@@ -55,8 +57,12 @@ class SWRDataManager:
     def __init_subclass__(cls):
         super().__init_subclass__()
 
-        cls.header_struct = struct.Struct(''.join([field.format for field in cls.header_fields_structure.values()]))
-        cls.data_struct = struct.Struct(''.join([field.format for field in cls.data_fields_structure.values()]))
+        cls.header_struct = struct.Struct(
+            cls.byte_order + ''.join([field.format for field in cls.header_fields_structure.values()])
+        )
+        cls.data_struct = struct.Struct(
+            cls.byte_order + ''.join([field.format for field in cls.data_fields_structure.values()])
+        )
 
     def load_file(self):
         self.header_stream = BytesIO()
@@ -76,12 +82,11 @@ class SWRDataManager:
             raise SWRebellionEditorDataFileHeaderMismatchError(
                 f'Expected header {self.expected_header} for data file , but got {header} instead.'
             )
-
+        import ipdb;ipdb.set_trace()
         self.data_dicts = []
-
         for data_tuple in self.data_struct.iter_unpack(self.data_stream.read()):
             data = OrderedDict(zip(self.data_fields_structure.keys(), data_tuple))
-            data['name'] = self.get_name(data['identifier_part_1'])
+            #data['name'] = self.get_name(data['identifier_part_1'])
             self.data_dicts.append(data)
 
     def get_name(self, name_id):
@@ -409,6 +414,85 @@ class MinorCharacterDataManager(CharacterBaseDataManager):
     expected_header = (1, 54, 56, 60)
 
 
+class SystemFacilityTableDataManager(SWRDataManager):
+    header_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("count", FieldDef('I', FieldType.DENORMALIZED)),
+        ("header_3", FieldDef('I', FieldType.DENORMALIZED)),
+        ("header_name", FieldDef('14s', FieldType.DENORMALIZED)),
+    ])
+
+    data_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("number2", FieldDef('I', FieldType.READ_ONLY)),  # always 1
+        ("percent", FieldDef('I', FieldType.READ_ONLY)),
+        ("level", FieldDef('H', FieldType.READ_ONLY)),
+        ("unknown", FieldDef('B', FieldType.READ_ONLY)),  # always 0
+        ("family_id", FieldDef('B', FieldType.READ_ONLY)),
+    ])
+
+
+class SystemFacilityCoreTableDataManager(SystemFacilityTableDataManager):
+    filename = "SYFCCRTB.DAT"
+
+    expected_header = (1, 8, 14, b'SeedTableEntry')
+
+
+class SystemFacilityRimTableDataManager(SystemFacilityTableDataManager):
+    filename = "SYFCRMTB.DAT"
+
+    expected_header = (1, 7, 14, b'SeedTableEntry')
+
+
+
+class AllianceFleetHomeTableDataManager(SystemFacilityTableDataManager):
+    #filename = "CMUNAFTB.DAT"
+    filename = "CMUNEFTB.DAT"
+
+    header_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("count", FieldDef('I', FieldType.DENORMALIZED)),
+        ("header_3", FieldDef('I', FieldType.DENORMALIZED)),
+        ("header_name", FieldDef('20s', FieldType.DENORMALIZED)),
+    ])
+
+    #expected_header = (1, 2, 20, b'SeedFamilyTableEntry')
+    expected_header = (1, 1, 20, b'SeedFamilyTableEntry')
+    #self.data_stream.seek(0)
+    #for x in list(struct.Struct('<'+'IIHBB').iter_unpack(self.data_stream.read())): print(x)
+    data_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("number2", FieldDef('I', FieldType.READ_ONLY)),  # always 1
+        ("percent", FieldDef('I', FieldType.READ_ONLY)),
+        ("level", FieldDef('H', FieldType.READ_ONLY)),
+        ("unknown", FieldDef('B', FieldType.READ_ONLY)),  # always 0
+        ("family_id", FieldDef('B', FieldType.READ_ONLY)),
+    ])
+
+    # (1, 1, 1, 0, 0)
+    # (1, 1, 10, 0, 0)
+    # (1, 0, 133, 0, 20)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 5, 0, 28)
+    # (1, 0, 6, 0, 16)
+    # (1, 0, 6, 0, 16)
+    # (1, 0, 6, 0, 16)
+
+    # (1, 1, 1, 0, 0)
+    # (1, 1, 1, 0, 0)
+    # (1, 0, 69, 0, 20)
+    # (2, 1, 2, 0, 0)
+    # (1, 1, 3, 0, 0)
+    # (1, 0, 70, 0, 20)
+    # (1, 0, 1, 0, 16)
+    # (1, 0, 1, 0, 16)
+
+
+
 ALL_MANAGERS = [
     SectorsDataManager,
     SystemsDataManager,
@@ -419,5 +503,7 @@ ALL_MANAGERS = [
     FightersDataManager,
     CapitalShipsDataManager,
     MajorCharacterDataManager,
-    MinorCharacterDataManager
+    MinorCharacterDataManager,
+    SystemFacilityCoreTableDataManager,
+    SystemFacilityRimTableDataManager
 ]
