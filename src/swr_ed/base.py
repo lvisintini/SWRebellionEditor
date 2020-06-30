@@ -3,66 +3,27 @@ import os
 from io import BytesIO
 from collections import namedtuple, OrderedDict
 
-#import win32api
-
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
 
 FieldDef = namedtuple('StrucFormatDef', ['format', 'type'])
 
 
-class SWRDataManager:
+class SWRBaseDataManager:
     filename = None
     file_location = 'GDATA'
+    header_struct_format = None
     expected_header = None
-
     byte_order = '<'  # we assume little-endian https://docs.python.org/3/library/struct.html#struct-alignment
-
-    # Verbatim -> http://forums.swrebellion.com/viewtopic.php?f=3&t=284
-    # The normal gamedata files (all *sd.dat except basicsd.dat.) have a common header. It is four DWORD long:
-    # - always 1
-    # - the number of things consisted
-    # - the "lower" consisted family identifier
-    # - the "higher" (not consisted) family identifier
-    #
-    # The "higher" family identifier is usually is higher by steps of four except that of the facilities which are
-    # separated.
-    #
-    # This does not apply to the *tb.dat files which have completely different structure.
-    #
-    # Eg:
-    # The troop family is 16, so the header of the Troopsd.dat is 1,10,16,20.
-    # Next are the capital ships: 1,30,20,28 (Death Star is 24 all others are 20), the fighters: 1,8,28,32, and
-    # so on ...
-    #
-    # However when I tried to add a new sector (data to the sectorsd.dat and name to textstrat.dll)
-    # to the game I failed so the number of consisted things (or maybe the file lenghts) must be stored elsewhere too.
-
-    header_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),  # always 1
-        ("count", FieldDef('I', FieldType.DENORMALIZED)),   # number of elements in file
-        ("family", FieldDef('I', FieldType.READ_ONLY)),  # family id
-        ("unknown", FieldDef('I', FieldType.DENORMALIZED)),  # the "higher" (not consisted) family identifier
-    ])
-
-    data_fields_structure = None
 
     def __init__(self, data_path=None):
         self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
+        self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
         self.header_stream = None
+        self.data_struct = None
         self.data_stream = None
-        self.data_dicts = None
-
-    def __init_subclass__(cls):
-        super().__init_subclass__()
-
-        cls.header_struct = struct.Struct(
-            cls.byte_order + ''.join([field.format for field in cls.header_fields_structure.values()])
-        )
-        cls.data_struct = struct.Struct(
-            cls.byte_order + ''.join([field.format for field in cls.data_fields_structure.values()])
-        )
+        self.data = None
 
     def load_file(self):
         self.header_stream = BytesIO()
@@ -82,12 +43,47 @@ class SWRDataManager:
             raise SWRebellionEditorDataFileHeaderMismatchError(
                 f'Expected header {self.expected_header} for data file , but got {header} instead.'
             )
-        import ipdb;ipdb.set_trace()
-        self.data_dicts = []
+
+        self.data = []
         for data_tuple in self.data_struct.iter_unpack(self.data_stream.read()):
-            data = OrderedDict(zip(self.data_fields_structure.keys(), data_tuple))
-            #data['name'] = self.get_name(data['identifier_part_1'])
-            self.data_dicts.append(data)
+            data = self.process_data_tuple(data_tuple)
+            self.data.append(data)
+
+    def process_data_tuple(self, data_tuple):
+        return data_tuple
+
+
+class SWRDataManager(SWRBaseDataManager):
+
+    # The data in the headers appears to support that:
+    # - The second number is the row count in the file
+    # - The third number is the lowest family_id value in the file
+    header_struct_format = "IIII"
+
+    data_fields_structure = None
+
+    def __init__(self, data_path=None):
+        super().__init__(data_path=data_path)
+
+        self.field_names = list(self.data_fields_structure.keys())
+
+        self.header_struct = struct.Struct(
+            self.byte_order + self.header_struct_format
+        )
+        self.data_struct = struct.Struct(
+            self.byte_order + ''.join([field.format for field in self.data_fields_structure.values()])
+        )
+
+    def __init_subclass__(cls):
+        super().__init_subclass__()
+
+    def process_data_tuple(self, data_tuple):
+        data_dict = dict(zip(self.field_names, data_tuple))
+        if 'identifier_part_1' in data_dict:
+            name = self.get_name(data_dict['identifier_part_1'])
+            if name:
+                data_dict['name'] = data_dict
+        return data_dict
 
     def get_name(self, name_id):
         #https://stackoverflow.com/questions/23263599/how-to-extract-128x128-icon-bitmap-data-from-exe-in-python
@@ -96,13 +92,16 @@ class SWRDataManager:
         # general name -> print(c['name'], ' -> ', manager.get_name(c['identifier_part_1'] + 28672))
         # commander name ->  print(c['name'], ' -> ',  manager.get_name(c['identifier_part_1'] + 26624))
         # admiral name -> print(c['name'], ' -> ', manager.get_name(c['identifier_part_1'] + 27648))
+        try:
+            import win32api
+        except ModuleNotFoundError:
+            return None
         textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, "TEXTSTRA.DLL"))
         return win32api.LoadString(textstra_lib, name_id)
 
 
 class FightersDataManager(SWRDataManager):
     filename = "FIGHTSD.DAT"
-
     expected_header = (1, 8, 28, 32)
 
     data_fields_structure = OrderedDict([
@@ -154,7 +153,6 @@ class FightersDataManager(SWRDataManager):
 
 class TroopsDataManager(SWRDataManager):
     filename = "TROOPSD.DAT"
-
     expected_header = (1, 10, 16, 20)
 
     data_fields_structure = OrderedDict([
@@ -181,7 +179,6 @@ class TroopsDataManager(SWRDataManager):
 
 class CapitalShipsDataManager(SWRDataManager):
     filename = "CAPSHPSD.DAT"
-
     expected_header = (1, 30, 20, 28)
 
     data_fields_structure = OrderedDict([
@@ -242,7 +239,6 @@ class CapitalShipsDataManager(SWRDataManager):
 
 class SectorsDataManager(SWRDataManager):
     filename = "SECTORSD.DAT"
-
     expected_header = (1, 20, 128, 144)
 
     data_fields_structure = OrderedDict([
@@ -250,7 +246,7 @@ class SectorsDataManager(SWRDataManager):
         ("active", FieldDef('I', FieldType.UNKNOWN)),  # maybe the active flag, always 1
         ("producing_facility_family_id", FieldDef('I', FieldType.READ_ONLY)),  # always 0
         ("producing_facility_family_id_one_based", FieldDef('I', FieldType.READ_ONLY)),  # always 0
-        ("family_id", FieldDef('I', FieldType.READ_ONLY)),  # usually 146
+        ("family_id", FieldDef('I', FieldType.READ_ONLY)),  # always 128
         ("identifier_part_1", FieldDef('H', FieldType.READ_ONLY)),  # can be used get the name from Textstrat.dll
         ("identifier_part_2", FieldDef('H', FieldType.READ_ONLY)),  # always 2
         ("importance", FieldDef('I', FieldType.EDITABLE)),  # 1-high 2-medium 3-low
@@ -262,7 +258,6 @@ class SectorsDataManager(SWRDataManager):
 
 class SystemsDataManager(SWRDataManager):
     filename = "SYSTEMSD.DAT"
-
     expected_header = (1, 200, 144, 152)
 
     data_fields_structure = OrderedDict([
@@ -284,7 +279,6 @@ class SystemsDataManager(SWRDataManager):
 
 class DefensiveFacilitiesDataManager(SWRDataManager):
     filename = "DEFFACSD.DAT"
-
     expected_header = (1, 6, 34, 40)
 
     data_fields_structure = OrderedDict([
@@ -310,7 +304,6 @@ class DefensiveFacilitiesDataManager(SWRDataManager):
 
 class ManufacturingFacilitiesDataManager(SWRDataManager):
     filename = "MANFACSD.DAT"
-
     expected_header = (1, 6, 40, 44)
 
     data_fields_structure = OrderedDict([
@@ -335,7 +328,6 @@ class ManufacturingFacilitiesDataManager(SWRDataManager):
 
 class ProductionFacilitiesDataManager(SWRDataManager):
     filename = "PROFACSD.DAT"
-
     expected_header = (1, 2, 44, 48)
 
     data_fields_structure = OrderedDict([
@@ -404,23 +396,16 @@ class CharacterBaseDataManager(SWRDataManager):
 
 class MajorCharacterDataManager(CharacterBaseDataManager):
     filename = "MJCHARSD.DAT"
-
     expected_header = (1, 6, 48, 56)
 
 
 class MinorCharacterDataManager(CharacterBaseDataManager):
     filename = "MNCHARSD.DAT"
-
     expected_header = (1, 54, 56, 60)
 
 
 class SystemFacilityTableDataManager(SWRDataManager):
-    header_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),
-        ("count", FieldDef('I', FieldType.DENORMALIZED)),
-        ("header_3", FieldDef('I', FieldType.DENORMALIZED)),
-        ("header_name", FieldDef('14s', FieldType.DENORMALIZED)),
-    ])
+    header_struct_format = "III14s"
 
     data_fields_structure = OrderedDict([
         ("number", FieldDef('I', FieldType.READ_ONLY)),
@@ -434,40 +419,27 @@ class SystemFacilityTableDataManager(SWRDataManager):
 
 class SystemFacilityCoreTableDataManager(SystemFacilityTableDataManager):
     filename = "SYFCCRTB.DAT"
-
     expected_header = (1, 8, 14, b'SeedTableEntry')
 
 
 class SystemFacilityRimTableDataManager(SystemFacilityTableDataManager):
     filename = "SYFCRMTB.DAT"
-
     expected_header = (1, 7, 14, b'SeedTableEntry')
 
 
+class GroupedTableDataManager(SWRBaseDataManager):
+    data_struct_format = 'IIHBB'
+    header_struct_format = "III20s"
 
-class AllianceFleetHomeTableDataManager(SystemFacilityTableDataManager):
-    #filename = "CMUNAFTB.DAT"
+    def __init__(self, data_path=None):
+        super().__init__(data_path=data_path)
+        self.data_struct = struct.Struct(self.byte_order + self.data_struct_format)
+
+
+class AllianceFleetHomeTableDataManager(GroupedTableDataManager):
     filename = "CMUNEFTB.DAT"
 
-    header_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),
-        ("count", FieldDef('I', FieldType.DENORMALIZED)),
-        ("header_3", FieldDef('I', FieldType.DENORMALIZED)),
-        ("header_name", FieldDef('20s', FieldType.DENORMALIZED)),
-    ])
-
-    #expected_header = (1, 2, 20, b'SeedFamilyTableEntry')
     expected_header = (1, 1, 20, b'SeedFamilyTableEntry')
-    #self.data_stream.seek(0)
-    #for x in list(struct.Struct('<'+'IIHBB').iter_unpack(self.data_stream.read())): print(x)
-    data_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),
-        ("number2", FieldDef('I', FieldType.READ_ONLY)),  # always 1
-        ("percent", FieldDef('I', FieldType.READ_ONLY)),
-        ("level", FieldDef('H', FieldType.READ_ONLY)),
-        ("unknown", FieldDef('B', FieldType.READ_ONLY)),  # always 0
-        ("family_id", FieldDef('B', FieldType.READ_ONLY)),
-    ])
 
     # (1, 1, 1, 0, 0)
     # (1, 1, 10, 0, 0)
@@ -482,6 +454,11 @@ class AllianceFleetHomeTableDataManager(SystemFacilityTableDataManager):
     # (1, 0, 6, 0, 16)
     # (1, 0, 6, 0, 16)
 
+
+class EmpireFleetHomeTableDataManager(GroupedTableDataManager):
+    filename = "CMUNAFTB.DAT"
+    expected_header = (1, 2, 20, b'SeedFamilyTableEntry')
+
     # (1, 1, 1, 0, 0)
     # (1, 1, 1, 0, 0)
     # (1, 0, 69, 0, 20)
@@ -490,7 +467,6 @@ class AllianceFleetHomeTableDataManager(SystemFacilityTableDataManager):
     # (1, 0, 70, 0, 20)
     # (1, 0, 1, 0, 16)
     # (1, 0, 1, 0, 16)
-
 
 
 ALL_MANAGERS = [
@@ -505,5 +481,7 @@ ALL_MANAGERS = [
     MajorCharacterDataManager,
     MinorCharacterDataManager,
     SystemFacilityCoreTableDataManager,
-    SystemFacilityRimTableDataManager
+    SystemFacilityRimTableDataManager,
+    AllianceFleetHomeTableDataManager,
+    EmpireFleetHomeTableDataManager
 ]
