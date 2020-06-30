@@ -11,262 +11,262 @@ snapshots['test_contents[SectorsDataManager] 1'] = [
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11648,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 20,
         'position_x': 469,
         'position_y': 642,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11649,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 21,
         'position_x': 272,
         'position_y': 96,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11650,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 22,
         'position_x': 132,
         'position_y': 417,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11651,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 23,
         'position_x': 258,
         'position_y': 394,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11652,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 24,
         'position_x': 380,
         'position_y': 129,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11653,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 25,
         'position_x': 472,
         'position_y': 253,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11654,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 26,
         'position_x': 359,
         'position_y': 663,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11655,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 27,
         'position_x': 385,
         'position_y': 525,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 3
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11656,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 28,
         'position_x': 587,
         'position_y': 370,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11657,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 29,
         'position_x': 596,
         'position_y': 253,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11658,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 30,
         'position_x': 737,
         'position_y': 548,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11659,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 31,
         'position_x': 221,
         'position_y': 569,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11660,
         'identifier_part_2': 2,
+        'importance': 2,
         'number': 32,
         'position_x': 488,
         'position_y': 129,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 2,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11661,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 33,
         'position_x': 191,
         'position_y': 148,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11662,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 34,
         'position_x': 695,
         'position_y': 684,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 2,
         'identifier_part_1': 11663,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 35,
         'position_x': 113,
         'position_y': 277,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 2
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11664,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 36,
         'position_x': 317,
         'position_y': 248,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11665,
         'identifier_part_2': 2,
+        'importance': 1,
         'number': 37,
         'position_x': 526,
         'position_y': 532,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 1,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 1,
         'identifier_part_1': 11666,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 38,
         'position_x': 717,
         'position_y': 438,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 1
+        'producing_facility_family_id_one_based': 0
     },
     {
         'active': 1,
         'family_id': 128,
+        'game_size': 3,
         'identifier_part_1': 11667,
         'identifier_part_2': 2,
+        'importance': 3,
         'number': 39,
         'position_x': 575,
         'position_y': 755,
         'producing_facility_family_id': 0,
-        'producing_facility_family_id_one_based': 0,
-        'unknown_1': 3,
-        'unknown_2': 3
+        'producing_facility_family_id_one_based': 0
     }
 ]
 
@@ -5993,7 +5993,7 @@ snapshots['test_contents[MinorCharacterDataManager] 1'] = [
         'producing_facility_family_id_one_based': 0,
         'research_order': 0,
         'ship_research_base': 40,
-        'ship_research_variance': 60,
+        'ship_research_variance': 50,
         'troop_research_base': 0,
         'troop_research_variance': 0,
         'unknown_5': 0,
@@ -8245,4 +8245,150 @@ snapshots['test_contents[SystemFacilityRimTableDataManager] 1'] = [
         'percent': 100,
         'unknown': 0
     }
+]
+
+snapshots['test_contents[AllianceFleetHomeTableDataManager] 1'] = [
+    (
+        1,
+        1,
+        1,
+        0,
+        0
+    ),
+    (
+        1,
+        1,
+        10,
+        0,
+        0
+    ),
+    (
+        1,
+        0,
+        133,
+        0,
+        20
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        5,
+        0,
+        28
+    ),
+    (
+        1,
+        0,
+        6,
+        0,
+        16
+    ),
+    (
+        1,
+        0,
+        6,
+        0,
+        16
+    ),
+    (
+        1,
+        0,
+        6,
+        0,
+        16
+    )
+]
+
+snapshots['test_contents[EmpireFleetHomeTableDataManager] 1'] = [
+    (
+        1,
+        1,
+        1,
+        0,
+        0
+    ),
+    (
+        1,
+        1,
+        1,
+        0,
+        0
+    ),
+    (
+        1,
+        0,
+        69,
+        0,
+        20
+    ),
+    (
+        2,
+        1,
+        2,
+        0,
+        0
+    ),
+    (
+        1,
+        1,
+        3,
+        0,
+        0
+    ),
+    (
+        1,
+        0,
+        70,
+        0,
+        20
+    ),
+    (
+        1,
+        0,
+        1,
+        0,
+        16
+    ),
+    (
+        1,
+        0,
+        1,
+        0,
+        16
+    )
 ]
