@@ -29,6 +29,7 @@ class SWRBaseDataManager:
         super().__init_subclass__(**kwargs)
         if cls.filename:
             ALL_MANAGERS.append(cls)
+            ALL_MANAGERS.sort(key=lambda m: m.filename)
 
     def load_file(self):
         self.header_stream = BytesIO()
@@ -76,8 +77,9 @@ class SWRDataManager(SWRBaseDataManager):
 
     data_fields_structure = None
 
-    def __init__(self, data_path=None):
+    def __init__(self, data_path=None, fetch_name=False):
         super().__init__(data_path=data_path)
+        self.fetch_names = fetch_name
 
         self.field_names = list(self.data_fields_structure.keys())
 
@@ -88,15 +90,12 @@ class SWRDataManager(SWRBaseDataManager):
             self.byte_order + ''.join([field.format for field in self.data_fields_structure.values()])
         )
 
-    def __init_subclass__(cls):
-        super().__init_subclass__()
-
     def process_data_tuple(self, data_tuple):
         data_dict = dict(zip(self.field_names, data_tuple))
-        if 'identifier_part_1' in data_dict:
+        if 'identifier_part_1' in data_dict and self.fetch_names:
             name = self.get_name(data_dict['identifier_part_1'])
             if name:
-                data_dict['name'] = data_dict
+                data_dict['name'] = name
         return data_dict
 
     def get_name(self, name_id):
@@ -108,10 +107,14 @@ class SWRDataManager(SWRBaseDataManager):
         # admiral name -> print(c['name'], ' -> ', manager.get_name(c['identifier_part_1'] + 27648))
         try:
             import win32api
+            import pywintypes
         except ModuleNotFoundError:
             return None
-        textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, "TEXTSTRA.DLL"))
-        return win32api.LoadString(textstra_lib, name_id)
+        try:
+            textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, "TEXTSTRA.DLL"))
+            return win32api.LoadString(textstra_lib, name_id)
+        except pywintypes.error:
+            return None
 
 
 class FightersDataManager(SWRDataManager):
@@ -131,14 +134,14 @@ class FightersDataManager(SWRDataManager):
         ("construction_cost", FieldDef('I', FieldType.EDITABLE)),
         ("maintenance", FieldDef('I', FieldType.EDITABLE)),
         ("research_order", FieldDef('I', FieldType.EDITABLE)),
-        ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
-        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier, always 0
+        ("unknown_1", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
+        ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier, always 0
         ("detection", FieldDef('I', FieldType.EDITABLE)),
         ("shield", FieldDef('I', FieldType.EDITABLE)),
-        ("sublight", FieldDef('I', FieldType.EDITABLE)),
+        ("sublight_speed", FieldDef('I', FieldType.EDITABLE)),
         ("maneuverability", FieldDef('I', FieldType.EDITABLE)),
         ("hyperdrive", FieldDef('I', FieldType.EDITABLE)),
-        ("unknown_4", FieldDef('I', FieldType.UNKNOWN)),  # backup hyperdrive, always 0
+        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # backup hyperdrive, always 0
         ("turbolaser_firepower_front", FieldDef('I', FieldType.EDITABLE)),
         ("ion_firepower_front", FieldDef('I', FieldType.EDITABLE)),
         ("laser_firepower_front", FieldDef('I', FieldType.EDITABLE)),
@@ -208,14 +211,14 @@ class CapitalShipsDataManager(SWRDataManager):
         ("construction_cost", FieldDef('I', FieldType.EDITABLE)),
         ("maintenance", FieldDef('I', FieldType.EDITABLE)),
         ("research_order", FieldDef('I', FieldType.EDITABLE)),
-        ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
-        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier, basicly 0.45 * construction_cost
+        ("unknown_1", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
+        ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier, basicly 0.45 * construction_cost
         ("detection", FieldDef('I', FieldType.EDITABLE)),
         ("shield", FieldDef('I', FieldType.EDITABLE)),
-        ("sublight", FieldDef('I', FieldType.EDITABLE)),
+        ("sublight_speed", FieldDef('I', FieldType.EDITABLE)),
         ("maneuverability", FieldDef('I', FieldType.EDITABLE)),
         ("hyperdrive", FieldDef('I', FieldType.EDITABLE)),
-        ("unknown_4", FieldDef('I', FieldType.UNKNOWN)),  # backup hyperdrive, always 0
+        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # backup hyperdrive, always 0
         ("turbolaser_firepower_front", FieldDef('I', FieldType.EDITABLE)),
         ("ion_firepower_front", FieldDef('I', FieldType.EDITABLE)),
         ("laser_firepower_front", FieldDef('I', FieldType.EDITABLE)),
@@ -236,18 +239,18 @@ class CapitalShipsDataManager(SWRDataManager):
         ("laser_firepower_sum", FieldDef('I', FieldType.DENORMALIZED)),
         ("firepower_sum", FieldDef('I', FieldType.DENORMALIZED)),
         ("hull", FieldDef('I', FieldType.EDITABLE)),
-        ("bombardment", FieldDef('I', FieldType.EDITABLE)),
+        ("tractor_beam_power", FieldDef('I', FieldType.EDITABLE)),
         ("tractor_beam_range", FieldDef('I', FieldType.EDITABLE)),
         ("gravity_well_1", FieldDef('H', FieldType.EDITABLE)),  # 4 if present
         ("gravity_well_2", FieldDef('H', FieldType.EDITABLE)),  # 100 if present
-        ("tractor_beam_power", FieldDef('I', FieldType.EDITABLE)),
+        ("unknown_4", FieldDef('I', FieldType.READ_ONLY)),  # Always 0
+        ("bombardment", FieldDef('I', FieldType.EDITABLE)),
         ("damage_control", FieldDef('I', FieldType.EDITABLE)),
         ("weapon_recharge", FieldDef('I', FieldType.EDITABLE)),
         ("shield_recharge", FieldDef('I', FieldType.EDITABLE)),
         ("fighter_squadrons", FieldDef('I', FieldType.EDITABLE)),
         ("troop_contingents", FieldDef('I', FieldType.EDITABLE)),
-        ("unknown_5", FieldDef('I', FieldType.READ_ONLY)),  # Always 0
-        ("defense", FieldDef('I', FieldType.EDITABLE))
+        ("unknown_5", FieldDef('I', FieldType.EDITABLE))
     ])
 
 
@@ -267,6 +270,43 @@ class SectorsDataManager(SWRDataManager):
         ("game_size", FieldDef('I', FieldType.EDITABLE)),  # 1-Small 2-Medium 3-Large
         ("position_x", FieldDef('H', FieldType.EDITABLE)),
         ("position_y", FieldDef('H', FieldType.EDITABLE)),
+    ])
+
+
+class MissionDataManager(SWRDataManager):
+    filename = "MISSNSD.DAT"
+    expected_header = (1, 25, 64, 128)
+
+    data_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("active", FieldDef('I', FieldType.UNKNOWN)),
+        ("producing_facility_family_id", FieldDef('I', FieldType.READ_ONLY)),
+        ("producing_facility_family_id_one_based", FieldDef('I', FieldType.READ_ONLY)),
+        ("family_id", FieldDef('I', FieldType.READ_ONLY)),
+        ("identifier_part_1", FieldDef('H', FieldType.READ_ONLY)),  # can be used get the name from Textstrat.dll
+        ("identifier_part_2", FieldDef('H', FieldType.READ_ONLY)),  # always 2
+        ("alliance", FieldDef('I', FieldType.READ_ONLY)),
+        ("imperial", FieldDef('I', FieldType.READ_ONLY)),
+        ("tbd_03", FieldDef('I', FieldType.READ_ONLY)),  # Number
+        ("tbd_04", FieldDef('I', FieldType.READ_ONLY)),  # Number
+        ("tbd_05", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_06", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_07", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_08", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_09", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_10", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_11", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_12", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_13", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_14", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_15", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_16", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_17", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_18", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_19", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_20", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_21", FieldDef('I', FieldType.READ_ONLY)),  # 10
+        ("tbd_22", FieldDef('I', FieldType.READ_ONLY)),  # 10
     ])
 
 
@@ -310,7 +350,7 @@ class DefensiveFacilitiesDataManager(SWRDataManager):
         ("maintenance", FieldDef('I', FieldType.EDITABLE)),
         ("research_order", FieldDef('I', FieldType.EDITABLE)),
         ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
-        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier
+        ("bombardment_defense", FieldDef('I', FieldType.UNKNOWN)),
         ("firepower", FieldDef('I', FieldType.EDITABLE)),
         ("shield_generation", FieldDef('I', FieldType.EDITABLE)),
     ])
@@ -335,8 +375,46 @@ class ManufacturingFacilitiesDataManager(SWRDataManager):
         ("maintenance", FieldDef('I', FieldType.EDITABLE)),
         ("research_order", FieldDef('I', FieldType.EDITABLE)),
         ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
-        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier
+        ("bombardment_defense", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier
         ("manufacturing_rate", FieldDef('I', FieldType.EDITABLE)),  # required days to manufacture 1 unit
+    ])
+
+
+class SpecialForcesDataManager(SWRDataManager):
+    filename = "SPECFCSD.DAT"
+    expected_header = (1, 9, 60, 64)
+
+    data_fields_structure = OrderedDict([
+        ("number", FieldDef('I', FieldType.READ_ONLY)),
+        ("active", FieldDef('I', FieldType.UNKNOWN)),
+        ("producing_facility_family_id", FieldDef('I', FieldType.READ_ONLY)),
+        ("producing_facility_family_id_one_based", FieldDef('I', FieldType.READ_ONLY)),
+        ("family_id", FieldDef('I', FieldType.READ_ONLY)),
+        ("identifier_part_1", FieldDef('H', FieldType.READ_ONLY)),  # can be used get the name from Textstrat.dll
+        ("identifier_part_2", FieldDef('H', FieldType.READ_ONLY)),  # always 2
+        ("alliance", FieldDef('I', FieldType.EDITABLE)),
+        ("imperial", FieldDef('I', FieldType.EDITABLE)),
+        ("construction_cost", FieldDef('I', FieldType.EDITABLE)),
+        ("maintenance", FieldDef('I', FieldType.EDITABLE)),
+        ("research_order", FieldDef('I', FieldType.UNKNOWN)),  # always 0
+        ("unknown_5", FieldDef('I', FieldType.UNKNOWN)),  # always 0
+        ("diplomacy_base", FieldDef('I', FieldType.EDITABLE)),
+        ("diplomacy_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("espionage_base", FieldDef('I', FieldType.EDITABLE)),
+        ("espionage_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("ship_research_base", FieldDef('I', FieldType.EDITABLE)),
+        ("ship_research_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("troop_research_base", FieldDef('I', FieldType.EDITABLE)),
+        ("troop_research_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("facility_research_base", FieldDef('I', FieldType.EDITABLE)),
+        ("facility_research_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("combat_base", FieldDef('I', FieldType.EDITABLE)),
+        ("combat_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("leadership_base", FieldDef('I', FieldType.EDITABLE)),
+        ("leadership_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("loyalty_base", FieldDef('I', FieldType.EDITABLE)),
+        ("loyalty_variance", FieldDef('I', FieldType.EDITABLE)),
+        ("mission_available", FieldDef('I', FieldType.EDITABLE)),  # related to MISSIONSD ?
     ])
 
 
@@ -358,7 +436,7 @@ class ProductionFacilitiesDataManager(SWRDataManager):
         ("maintenance", FieldDef('I', FieldType.EDITABLE)),  # 0 for both
         ("research_order", FieldDef('I', FieldType.EDITABLE)),   # 0 for both
         ("unknown_2", FieldDef('I', FieldType.UNKNOWN)),  # maybe research difficulty
-        ("unknown_3", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier
+        ("bombardment_defense", FieldDef('I', FieldType.UNKNOWN)),  # maybe moral modifier
         ("production _rate", FieldDef('I', FieldType.EDITABLE)),  # required days to manufacture 1 unit
     ])
 
@@ -539,7 +617,7 @@ class InformantsTableDataManager(SimpleTableDataManager):
     expected_header = (1, 8, 13, b'IntTableEntry')
 
 
-class EscapeTableDataManager(ProbabilityTableDataBaseManager):
+class EscapeAttemptTableDataManager(ProbabilityTableDataBaseManager):
     filename = "ESCAPETB.DAT"
     expected_header = (1, 9, 13, b'IntTableEntry')
 
@@ -549,7 +627,7 @@ class ResearchMissionTableDataManager(SimpleTableDataManager):
     expected_header = (1, 4, 13, b'IntTableEntry')
 
 
-class LeiaVaderTableDataManager(ProbabilityTableDataBaseManager):
+class EvadeCaptureTableDataManager(ProbabilityTableDataBaseManager):
     filename = "RLEVADTB.DAT"
     expected_header = (1, 14, 13, b'IntTableEntry')
 
