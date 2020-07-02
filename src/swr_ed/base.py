@@ -2,7 +2,7 @@ import struct
 import os
 from io import BytesIO
 from collections import namedtuple, OrderedDict
-
+from . import ALL_MANAGERS
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
 
@@ -25,6 +25,11 @@ class SWRBaseDataManager:
         self.data_stream = None
         self.data = None
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if cls.filename:
+            ALL_MANAGERS.append(cls)
+
     def load_file(self):
         self.header_stream = BytesIO()
         self.data_stream = BytesIO()
@@ -41,7 +46,8 @@ class SWRBaseDataManager:
 
         if header != self.expected_header:
             raise SWRebellionEditorDataFileHeaderMismatchError(
-                f'Expected header {self.expected_header} for data file , but got {header} instead.'
+                f'Manager {self.__class__.__name__} expected header '
+                f'{self.expected_header} for data file , but got {header} instead.'
             )
 
         self.data = []
@@ -51,6 +57,14 @@ class SWRBaseDataManager:
 
     def process_data_tuple(self, data_tuple):
         return data_tuple
+
+
+class SimpleSWRDataManager(SWRBaseDataManager):
+    data_struct_format = None
+
+    def __init__(self, data_path=None):
+        super().__init__(data_path=data_path)
+        self.data_struct = struct.Struct(self.byte_order + self.data_struct_format)
 
 
 class SWRDataManager(SWRBaseDataManager):
@@ -427,16 +441,125 @@ class SystemFacilityRimTableDataManager(SystemFacilityTableDataManager):
     expected_header = (1, 7, 14, b'SeedTableEntry')
 
 
-class GroupedTableDataManager(SWRBaseDataManager):
-    data_struct_format = 'IIHBB'
+class TableDataBaseManager(SWRDataManager):
+    header_struct_format = "III13s"
+
+
+class ProbabilityTableDataBaseManager(TableDataBaseManager):
+    data_fields_structure = OrderedDict([
+        ("index", FieldDef('I', FieldType.READ_ONLY)),
+        ("one", FieldDef('I', FieldType.READ_ONLY)),
+        ("score", FieldDef('i', FieldType.READ_ONLY)),
+        ("probability", FieldDef('I', FieldType.READ_ONLY)),
+    ])
+
+
+class AssassinationMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "ASSNMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class AbductionMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "ABDCMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class DiplomacyMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "DIPLMSTB.DAT"
+    expected_header = (1, 10, 13, b'IntTableEntry')
+
+
+class DeathStarSabotageMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "DSSBMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class EspionageMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "ESPIMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class InciteUprisingMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "INCTMSTB.DAT"
+    expected_header = (1, 13, 13, b'IntTableEntry')
+
+
+class ReconnaissanceMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "RCRTMSTB.DAT"
+    expected_header = (1, 11, 13, b'IntTableEntry')
+
+
+class RescueMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "RESCMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class SabotageMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "SBTGMSTB.DAT"
+    expected_header = (1, 12, 13, b'IntTableEntry')
+
+
+class SubdueUprisingMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "SUBDMSTB.DAT"
+    expected_header = (1, 13, 13, b'IntTableEntry')
+
+
+class TroopDecoyTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "TDECOYTB.DAT"
+    expected_header = (1, 14, 13, b'IntTableEntry')
+
+
+class FleetDecoyTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "FDECOYTB.DAT"
+    expected_header = (1, 14, 13, b'IntTableEntry')
+
+
+class FoilMissionTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "FOILTB.DAT"
+    expected_header = (1, 14, 13, b'IntTableEntry')
+
+
+class SimpleTableDataManager(SimpleSWRDataManager):
+    header_struct_format = "III13s"
+    data_struct_format = 'IIiI'
+
+
+class Uprising1TableDataManager(SimpleTableDataManager):
+    filename = "UPRIS1TB.DAT"
+    expected_header = (1, 3, 13, b'IntTableEntry')
+
+
+class Uprising2TableDataManager(SimpleTableDataManager):
+    filename = "UPRIS2TB.DAT"
+    expected_header = (1, 4, 13, b'IntTableEntry')
+
+
+class InformantsTableDataManager(SimpleTableDataManager):
+    filename = "INFORMTB.DAT"
+    expected_header = (1, 8, 13, b'IntTableEntry')
+
+
+class EscapeTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "ESCAPETB.DAT"
+    expected_header = (1, 9, 13, b'IntTableEntry')
+
+
+class ResearchMissionTableDataManager(SimpleTableDataManager):
+    filename = "RESRCTB.DAT"
+    expected_header = (1, 4, 13, b'IntTableEntry')
+
+
+class LeiaVaderTableDataManager(ProbabilityTableDataBaseManager):
+    filename = "RLEVADTB.DAT"
+    expected_header = (1, 14, 13, b'IntTableEntry')
+
+
+class GroupedTableBaseDataManager(SimpleSWRDataManager):
     header_struct_format = "III20s"
-
-    def __init__(self, data_path=None):
-        super().__init__(data_path=data_path)
-        self.data_struct = struct.Struct(self.byte_order + self.data_struct_format)
+    data_struct_format = 'IIHBB'
 
 
-class AllianceFleetHomeTableDataManager(GroupedTableDataManager):
+class AllianceFleetHomeTableDataManager(GroupedTableBaseDataManager):
     filename = "CMUNEFTB.DAT"
 
     expected_header = (1, 1, 20, b'SeedFamilyTableEntry')
@@ -455,7 +578,7 @@ class AllianceFleetHomeTableDataManager(GroupedTableDataManager):
     # (1, 0, 6, 0, 16)
 
 
-class EmpireFleetHomeTableDataManager(GroupedTableDataManager):
+class EmpireFleetHomeTableDataManager(GroupedTableBaseDataManager):
     filename = "CMUNAFTB.DAT"
     expected_header = (1, 2, 20, b'SeedFamilyTableEntry')
 
@@ -467,21 +590,3 @@ class EmpireFleetHomeTableDataManager(GroupedTableDataManager):
     # (1, 0, 70, 0, 20)
     # (1, 0, 1, 0, 16)
     # (1, 0, 1, 0, 16)
-
-
-ALL_MANAGERS = [
-    SectorsDataManager,
-    SystemsDataManager,
-    ManufacturingFacilitiesDataManager,
-    ProductionFacilitiesDataManager,
-    DefensiveFacilitiesDataManager,
-    TroopsDataManager,
-    FightersDataManager,
-    CapitalShipsDataManager,
-    MajorCharacterDataManager,
-    MinorCharacterDataManager,
-    SystemFacilityCoreTableDataManager,
-    SystemFacilityRimTableDataManager,
-    AllianceFleetHomeTableDataManager,
-    EmpireFleetHomeTableDataManager
-]
