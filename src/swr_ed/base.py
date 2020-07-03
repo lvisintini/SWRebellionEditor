@@ -91,7 +91,7 @@ class SWRDataManager(SWRBaseDataManager):
         )
 
     def process_data_tuple(self, data_tuple):
-        data_dict = dict(zip(self.field_names, data_tuple))
+        data_dict = OrderedDict(zip(self.field_names, data_tuple))
         if 'identifier_part_1' in data_dict and self.fetch_names:
             name = self.get_name(data_dict['identifier_part_1'])
             if name:
