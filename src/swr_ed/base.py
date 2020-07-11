@@ -29,12 +29,13 @@ class SWRBaseManager:
     file_location = 'GDATA'
     header_struct_format = None
     expected_header = None
-    md5_checksum = None
+    expected_md5_checksum = None
     byte_order = '<'  # we assume little-endian https://docs.python.org/3/library/struct.html#struct-alignment
 
     def __init__(self, data_path=None):
         self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
+        self.loaded_md5_checksum = None
         self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
         self.header_count = None
         self.data = None
@@ -55,7 +56,7 @@ class SWRBaseManager:
             file_stream.write(file_obj.read())
 
         file_stream.seek(0)
-        md5_checksum = hashlib.md5(file_stream.read()).hexdigest()
+        self.loaded_md5_checksum = hashlib.md5(file_stream.read()).hexdigest()
 
         file_stream.seek(0)
         header_stream.write(file_stream.read(self.header_struct.size))
@@ -65,7 +66,7 @@ class SWRBaseManager:
 
         header = self.header_struct.unpack(header_stream.read())
 
-        if md5_checksum != self.md5_checksum:
+        if self.loaded_md5_checksum != self.expected_md5_checksum:
             log.warning("%s appears to have been previously modified", self.file_path)
 
             if header != self.expected_header:
@@ -91,11 +92,32 @@ class SWRBaseManager:
 
         self.data = []
         for data_tuple in self.data_struct.iter_unpack(data_stream.read()):
-            data = self.process_data_tuple(data_tuple)
+            data = self.upgrade_data(data_tuple)
             self.data.append(data)
 
-    def process_data_tuple(self, data_tuple):
-        return data_tuple
+    def save_file(self):
+        file_stream = BytesIO()
+        new_header = [self.expected_header[0], self.get_count()] + list(self.expected_header[2:])
+
+        file_stream.write(self.header_struct.pack(*new_header))
+
+        for entry in self.data:
+            data_tuple = self.downgrade_data(entry)
+            file_stream.write(self.data_struct.pack(*data_tuple))
+
+        file_stream.seek(0)
+
+        with open(self.file_path, "wb") as file_obj:
+            file_obj.write(file_stream.read())
+
+    def get_count(self):
+        return len(self.data)
+
+    def upgrade_data(self, data_tuple):
+        return list(data_tuple)
+
+    def downgrade_data(self, data):
+        return data
 
 
 class SimpleSWRManager(SWRBaseManager):
@@ -142,11 +164,14 @@ class SWRDataManager(SWRBaseManager, metaclass=FieldsMeta):
             self.byte_order + self.header_struct_format
         )
 
-    def process_data_tuple(self, data_tuple):
+    def upgrade_data(self, data_tuple):
         data_dict = OrderedDict(zip(list(self.fields.keys()), data_tuple))
         if 'name_id_1' in data_dict and self.fetch_names:
             data_dict.update(self.get_texts(name=data_dict['name_id_1']))
         return data_dict
+
+    def downgrade_data(self, data):
+        return (data[attr] for attr in list(self.fields.keys()))
 
     def get_texts(self, **kwargs):
         res = {}
@@ -170,11 +195,11 @@ class SWRDataManager(SWRBaseManager, metaclass=FieldsMeta):
             return None
 
 
-class TableDataBaseDataManager(SWRDataManager):
+class TableDataManager(SWRDataManager):
     header_struct_format = "III13s"
 
 
-class ProbabilityTableDataBaseManager(TableDataBaseDataManager):
+class ProbabilityTableManager(TableDataManager):
     index = FieldDef('I', FieldType.READ_ONLY)
     one = FieldDef('I', FieldType.READ_ONLY)
     score = FieldDef('i', FieldType.READ_ONLY)
@@ -186,6 +211,9 @@ class SimpleTableDataManager(SimpleSWRManager):
     data_struct_format = 'IIiI'
 
 
-class GroupedTableBaseDataManager(SimpleSWRManager):
+class GroupedTableManager(SimpleSWRManager):
     header_struct_format = "III20s"
     data_struct_format = 'IIHBB'
+
+    def get_count(self):
+        return max([entry[0] for entry in self.data])

@@ -1,13 +1,13 @@
 from collections import OrderedDict
 
-from swr_ed.base import SWRDataManager, FieldDef, ProbabilityTableDataBaseManager, SimpleTableDataManager, GroupedTableBaseDataManager
+from swr_ed.base import SWRDataManager, FieldDef, ProbabilityTableManager, SimpleTableDataManager, GroupedTableManager
 from swr_ed.constants import FieldType
 
 
 class FightersDataDataManager(SWRDataManager):
     filename = "FIGHTSD.DAT"
     expected_header = (1, 8, 28, 32)
-    md5_checksum = '572eb17566f6501be1141575f456c7f0'
+    expected_md5_checksum = '572eb17566f6501be1141575f456c7f0'
 
     id = FieldDef('I', FieldType.READ_ONLY)
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -57,7 +57,7 @@ class FightersDataDataManager(SWRDataManager):
 class TroopsDataDataManager(SWRDataManager):
     filename = "TROOPSD.DAT"
     expected_header = (1, 10, 16, 20)
-    md5_checksum = 'c33fe785bfb1c0a42328009f9d28a68d'
+    expected_md5_checksum = 'c33fe785bfb1c0a42328009f9d28a68d'
 
     id = FieldDef('I', FieldType.READ_ONLY)
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -82,7 +82,7 @@ class TroopsDataDataManager(SWRDataManager):
 class CapitalShipsDataDataManager(SWRDataManager):
     filename = "CAPSHPSD.DAT"
     expected_header = (1, 30, 20, 28)
-    md5_checksum = '6ebce9890547475adc09dc2071bd9216'
+    expected_md5_checksum = '6ebce9890547475adc09dc2071bd9216'
 
     id = FieldDef('I', FieldType.READ_ONLY)
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -141,7 +141,7 @@ class CapitalShipsDataDataManager(SWRDataManager):
 class SectorsDataDataManager(SWRDataManager):
     filename = "SECTORSD.DAT"
     expected_header = (1, 20, 128, 144)
-    md5_checksum = '21b49b9e8a0c2829da55e083cab16969'
+    expected_md5_checksum = '21b49b9e8a0c2829da55e083cab16969'
 
     id = FieldDef('I', FieldType.READ_ONLY)  # starting from 100
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -159,7 +159,7 @@ class SectorsDataDataManager(SWRDataManager):
 class MissionDataDataManager(SWRDataManager):
     filename = "MISSNSD.DAT"
     expected_header = (1, 25, 64, 128)
-    md5_checksum = '3671b7e692a198a042b92a89ad0846c8'
+    expected_md5_checksum = '3671b7e692a198a042b92a89ad0846c8'
 
     id = FieldDef('I', FieldType.READ_ONLY)
     active = FieldDef('I', FieldType.UNKNOWN)
@@ -196,7 +196,7 @@ class MissionDataDataManager(SWRDataManager):
 class SystemsDataDataManager(SWRDataManager):
     filename = "SYSTEMSD.DAT"
     expected_header = (1, 200, 144, 152)
-    md5_checksum = '6896149fc26d1573118d1193b0d0366d'
+    expected_md5_checksum = '6896149fc26d1573118d1193b0d0366d'
 
     id = FieldDef('I', FieldType.READ_ONLY)  # starting from 100
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -216,7 +216,7 @@ class SystemsDataDataManager(SWRDataManager):
 class DefensiveFacilitiesDataDataManager(SWRDataManager):
     filename = "DEFFACSD.DAT"
     expected_header = (1, 6, 34, 40)
-    md5_checksum = 'ec67675858ebff9a186c7984b63d8d8e'
+    expected_md5_checksum = 'ec67675858ebff9a186c7984b63d8d8e'
 
     id = FieldDef('I', FieldType.READ_ONLY)  # starting from 1
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -240,7 +240,7 @@ class DefensiveFacilitiesDataDataManager(SWRDataManager):
 class ManufacturingFacilitiesDataDataManager(SWRDataManager):
     filename = "MANFACSD.DAT"
     expected_header = (1, 6, 40, 44)
-    md5_checksum = '75d1e916c00a411ca58b48eb46b055ae'
+    expected_md5_checksum = '75d1e916c00a411ca58b48eb46b055ae'
 
     id = FieldDef('I', FieldType.READ_ONLY)  # starting from 1
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -263,7 +263,7 @@ class ManufacturingFacilitiesDataDataManager(SWRDataManager):
 class SpecialForcesDataDataManager(SWRDataManager):
     filename = "SPECFCSD.DAT"
     expected_header = (1, 9, 60, 64)
-    md5_checksum = '310154da0e88381afc602185a545200d'
+    expected_md5_checksum = '310154da0e88381afc602185a545200d'
 
     id = FieldDef('I', FieldType.READ_ONLY)
     active = FieldDef('I', FieldType.UNKNOWN)
@@ -300,7 +300,7 @@ class SpecialForcesDataDataManager(SWRDataManager):
 class ProductionFacilitiesDataDataManager(SWRDataManager):
     filename = "PROFACSD.DAT"
     expected_header = (1, 2, 44, 48)
-    md5_checksum = 'eb5418ffb7dcea3eb8a4ed70b003a3cd'
+    expected_md5_checksum = 'eb5418ffb7dcea3eb8a4ed70b003a3cd'
 
     id = FieldDef('I', FieldType.READ_ONLY)  # 1 for both
     active = FieldDef('I', FieldType.UNKNOWN)  # maybe the active flag, always 1
@@ -361,7 +361,7 @@ class CharacterBaseDataDataManager(SWRDataManager):
     wont_betray_own_side = FieldDef('I', FieldType.EDITABLE)
     can_train_jedis = FieldDef('I', FieldType.EDITABLE)
 
-    def process_data_tuple(self, data_tuple):
+    def upgrade_data(self, data_tuple):
         data_dict = OrderedDict(zip(list(self.fields.keys()), data_tuple))
         data_dict.update(
             self.get_texts(
@@ -377,13 +377,13 @@ class CharacterBaseDataDataManager(SWRDataManager):
 class MajorCharacterDataManager(CharacterBaseDataDataManager):
     filename = "MJCHARSD.DAT"
     expected_header = (1, 6, 48, 56)
-    md5_checksum = '63b9fa47abd1707abbffe1d0a8f03f4b'
+    expected_md5_checksum = '63b9fa47abd1707abbffe1d0a8f03f4b'
 
 
 class MinorCharacterDataManager(CharacterBaseDataDataManager):
     filename = "MNCHARSD.DAT"
     expected_header = (1, 54, 56, 60)
-    md5_checksum = '3df29ab3d514f2824f43527d96c32bbb'
+    expected_md5_checksum = '3df29ab3d514f2824f43527d96c32bbb'
 
 
 class SystemFacilityTableDataDataManager(SWRDataManager):
@@ -400,158 +400,136 @@ class SystemFacilityTableDataDataManager(SWRDataManager):
 class SystemFacilityCoreTableDataManager(SystemFacilityTableDataDataManager):
     filename = "SYFCCRTB.DAT"
     expected_header = (1, 8, 14, b'SeedTableEntry')
-    md5_checksum = '2aeb4ffebd247b0dc81e29e3d380b9c8'
+    expected_md5_checksum = '2aeb4ffebd247b0dc81e29e3d380b9c8'
 
 
 class SystemFacilityRimTableDataManager(SystemFacilityTableDataDataManager):
     filename = "SYFCRMTB.DAT"
     expected_header = (1, 7, 14, b'SeedTableEntry')
-    md5_checksum = '38f60c0ada2af36ab4eb23eab554ba50'
+    expected_md5_checksum = '38f60c0ada2af36ab4eb23eab554ba50'
 
 
-class AssassinationMissionTableDataManager(ProbabilityTableDataBaseManager):
+class AssassinationMissionTableDataManager(ProbabilityTableManager):
     filename = "ASSNMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = '50b57a95d01346b92eed3eb457600ad2'
+    expected_md5_checksum = '50b57a95d01346b92eed3eb457600ad2'
 
 
-class AbductionMissionTableDataManager(ProbabilityTableDataBaseManager):
+class AbductionMissionTableDataManager(ProbabilityTableManager):
     filename = "ABDCMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = 'b5c809a85ae68ff810a0699116925ff6'
+    expected_md5_checksum = 'b5c809a85ae68ff810a0699116925ff6'
 
 
-class DiplomacyMissionTableDataManager(ProbabilityTableDataBaseManager):
+class DiplomacyMissionTableDataManager(ProbabilityTableManager):
     filename = "DIPLMSTB.DAT"
     expected_header = (1, 10, 13, b'IntTableEntry')
-    md5_checksum = '2ce657d774bedac233c01612be93000a'
+    expected_md5_checksum = '2ce657d774bedac233c01612be93000a'
 
 
-class DeathStarSabotageMissionTableDataManager(ProbabilityTableDataBaseManager):
+class DeathStarSabotageMissionTableDataManager(ProbabilityTableManager):
     filename = "DSSBMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
+    expected_md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
 
 
-class EspionageMissionTableDataManager(ProbabilityTableDataBaseManager):
+class EspionageMissionTableDataManager(ProbabilityTableManager):
     filename = "ESPIMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
+    expected_md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
 
 
-class InciteUprisingMissionTableDataManager(ProbabilityTableDataBaseManager):
+class InciteUprisingMissionTableDataManager(ProbabilityTableManager):
     filename = "INCTMSTB.DAT"
     expected_header = (1, 13, 13, b'IntTableEntry')
-    md5_checksum = '1f1df0a27ab78493c33816bd9c2dbdf3'
+    expected_md5_checksum = '1f1df0a27ab78493c33816bd9c2dbdf3'
 
 
-class ReconnaissanceMissionTableDataManager(ProbabilityTableDataBaseManager):
+class ReconnaissanceMissionTableDataManager(ProbabilityTableManager):
     filename = "RCRTMSTB.DAT"
     expected_header = (1, 11, 13, b'IntTableEntry')
-    md5_checksum = '25aed57916a6e3d37fbc3de5874235fe'
+    expected_md5_checksum = '25aed57916a6e3d37fbc3de5874235fe'
 
 
-class RescueMissionTableDataManager(ProbabilityTableDataBaseManager):
+class RescueMissionTableDataManager(ProbabilityTableManager):
     filename = "RESCMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
+    expected_md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
 
 
-class SabotageMissionTableDataManager(ProbabilityTableDataBaseManager):
+class SabotageMissionTableDataManager(ProbabilityTableManager):
     filename = "SBTGMSTB.DAT"
     expected_header = (1, 12, 13, b'IntTableEntry')
-    md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
+    expected_md5_checksum = 'f9fe00827aa2045d3122aec5f4335b61'
 
 
-class SubdueUprisingMissionTableDataManager(ProbabilityTableDataBaseManager):
+class SubdueUprisingMissionTableDataManager(ProbabilityTableManager):
     filename = "SUBDMSTB.DAT"
     expected_header = (1, 13, 13, b'IntTableEntry')
-    md5_checksum = '1f1df0a27ab78493c33816bd9c2dbdf3'
+    expected_md5_checksum = '1f1df0a27ab78493c33816bd9c2dbdf3'
 
 
-class TroopDecoyTableDataManager(ProbabilityTableDataBaseManager):
+class TroopDecoyTableDataManager(ProbabilityTableManager):
     filename = "TDECOYTB.DAT"
     expected_header = (1, 14, 13, b'IntTableEntry')
-    md5_checksum = '54fce80164c1df2687658f97a9f6a052'
+    expected_md5_checksum = '54fce80164c1df2687658f97a9f6a052'
 
 
-class FleetDecoyTableDataManager(ProbabilityTableDataBaseManager):
+class FleetDecoyTableDataManager(ProbabilityTableManager):
     filename = "FDECOYTB.DAT"
     expected_header = (1, 14, 13, b'IntTableEntry')
-    md5_checksum = '54fce80164c1df2687658f97a9f6a052'
+    expected_md5_checksum = '54fce80164c1df2687658f97a9f6a052'
 
 
-class FoilMissionTableDataManager(ProbabilityTableDataBaseManager):
+class FoilMissionTableDataManager(ProbabilityTableManager):
     filename = "FOILTB.DAT"
     expected_header = (1, 14, 13, b'IntTableEntry')
-    md5_checksum = '9529c4f5933bbfe6784126c3423500cc'
+    expected_md5_checksum = '9529c4f5933bbfe6784126c3423500cc'
 
 
 class Uprising1TableDataManager(SimpleTableDataManager):
     filename = "UPRIS1TB.DAT"
     expected_header = (1, 3, 13, b'IntTableEntry')
-    md5_checksum = 'dc62ec45b75e57822e48dbe6ace4404f'
+    expected_md5_checksum = 'dc62ec45b75e57822e48dbe6ace4404f'
 
 
 class Uprising2TableDataManager(SimpleTableDataManager):
     filename = "UPRIS2TB.DAT"
     expected_header = (1, 4, 13, b'IntTableEntry')
-    md5_checksum = 'c50c36b5be1684524bfc62c889654916'
+    expected_md5_checksum = 'c50c36b5be1684524bfc62c889654916'
 
 
 class InformantsTableDataManager(SimpleTableDataManager):
     filename = "INFORMTB.DAT"
     expected_header = (1, 8, 13, b'IntTableEntry')
-    md5_checksum = '711482e9e194f98ad33979d83a1b183f'
+    expected_md5_checksum = '711482e9e194f98ad33979d83a1b183f'
 
 
-class EscapeAttemptTableDataManager(ProbabilityTableDataBaseManager):
+class EscapeAttemptTableDataManager(ProbabilityTableManager):
     filename = "ESCAPETB.DAT"
     expected_header = (1, 9, 13, b'IntTableEntry')
-    md5_checksum = 'a58848ece67376e2250ac628a2436de6'
+    expected_md5_checksum = 'a58848ece67376e2250ac628a2436de6'
 
 
 class ResearchMissionTableDataManager(SimpleTableDataManager):
     filename = "RESRCTB.DAT"
     expected_header = (1, 4, 13, b'IntTableEntry')
-    md5_checksum = 'a4f540cdd3f44779c7b7a4f7e876a05d'
+    expected_md5_checksum = 'a4f540cdd3f44779c7b7a4f7e876a05d'
 
 
-class EvadeCaptureTableDataManager(ProbabilityTableDataBaseManager):
+class EvadeCaptureTableDataManager(ProbabilityTableManager):
     filename = "RLEVADTB.DAT"
     expected_header = (1, 14, 13, b'IntTableEntry')
-    md5_checksum = '46d6a46ac8a4da3ef7ad9ebabfecd067'
+    expected_md5_checksum = '46d6a46ac8a4da3ef7ad9ebabfecd067'
 
 
-class AllianceFleetHomeTableDataManager(GroupedTableBaseDataManager):
+class EmpireFleetHomeTableDataManager(GroupedTableManager):
     filename = "CMUNEFTB.DAT"
     expected_header = (1, 1, 20, b'SeedFamilyTableEntry')
-    md5_checksum = 'b60d31a01f65232001bac5119e8873f7'
-
-    # (1, 1, 1, 0, 0)
-    # (1, 1, 10, 0, 0)
-    # (1, 0, 133, 0, 20)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 5, 0, 28)
-    # (1, 0, 6, 0, 16)
-    # (1, 0, 6, 0, 16)
-    # (1, 0, 6, 0, 16)
+    expected_md5_checksum = 'b60d31a01f65232001bac5119e8873f7'
 
 
-class EmpireFleetHomeTableDataManager(GroupedTableBaseDataManager):
+class AllianceFleetHomeTableDataManager(GroupedTableManager):
     filename = "CMUNAFTB.DAT"
     expected_header = (1, 2, 20, b'SeedFamilyTableEntry')
-    md5_checksum = '83fd5f8a0d3f067df788d7dab1fff684'
-
-    # (1, 1, 1, 0, 0)
-    # (1, 1, 1, 0, 0)
-    # (1, 0, 69, 0, 20)
-    # (2, 1, 2, 0, 0)
-    # (1, 1, 3, 0, 0)
-    # (1, 0, 70, 0, 20)
-    # (1, 0, 1, 0, 16)
-    # (1, 0, 1, 0, 16)
+    expected_md5_checksum = '83fd5f8a0d3f067df788d7dab1fff684'
