@@ -95,7 +95,7 @@ class SWRBaseManager:
             data = self.upgrade_data(data_tuple)
             self.data.append(data)
 
-    def save_file(self):
+    def prepare_file(self):
         file_stream = BytesIO()
         new_header = [self.expected_header[0], self.get_count()] + list(self.expected_header[2:])
 
@@ -106,7 +106,10 @@ class SWRBaseManager:
             file_stream.write(self.data_struct.pack(*data_tuple))
 
         file_stream.seek(0)
+        return file_stream
 
+    def save_file(self):
+        file_stream = self.prepare_file()
         with open(self.file_path, "wb") as file_obj:
             file_obj.write(file_stream.read())
 

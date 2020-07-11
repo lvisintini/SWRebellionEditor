@@ -16,7 +16,7 @@ def print_csv(manager_class):
     if issubclass(manager_class, SWRDataManager):
         manager = manager_class(fetch_names=True)
         manager.load_file()
-        print('"' + '","'.join(manager.data_fields_structure.keys()) + '"')
+        print('"' + '","'.join(manager.fields.keys()) + '"')
         for row in manager.data:
             print('"' + '","'.join([str(v) for v in row.values()]) + '"')
     else:
