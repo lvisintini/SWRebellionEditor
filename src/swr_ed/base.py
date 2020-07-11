@@ -2,16 +2,21 @@ import hashlib
 import os
 import logging
 import struct
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict
 from io import BytesIO
 
 from . import ALL_MANAGERS, MANAGERS_BY_FILE
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
 
-FieldDef = namedtuple('StrucFormatDef', ['format', 'type'])
 
 log = logging.getLogger(__name__)
+
+
+class FieldDef:
+    def __init__(self, format, type):
+        self.format = format
+        self.type = type
 
 
 class SWRBaseManager:
@@ -32,7 +37,6 @@ class SWRBaseManager:
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
         self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
         self.header_count = None
-        self.data_struct = None
         self.data = None
 
     def __init_subclass__(cls, **kwargs):
@@ -102,30 +106,44 @@ class SimpleSWRManager(SWRBaseManager):
         self.data_struct = struct.Struct(self.byte_order + self.data_struct_format)
 
 
-class SWRDataManager(SWRBaseManager):
+class FieldsMeta(type):
+    def __new__(meta, classname, bases, class_dict):
+        fields = OrderedDict()
+        for attr in list(class_dict.keys()):
+            if isinstance(class_dict[attr], FieldDef):
+                field = class_dict.pop(attr)
+                fields[attr] = field
+
+        if fields:
+            class_dict['fields'] = fields
+
+        cls = type.__new__(meta, classname, bases, class_dict)
+
+        if hasattr(cls, 'fields') and hasattr(cls, 'byte_order'):
+            cls.data_struct = struct.Struct(
+                cls.byte_order + ''.join([field.format for field in cls.fields.values()])
+            )
+
+        return cls
+
+
+class SWRDataManager(SWRBaseManager, metaclass=FieldsMeta):
 
     # The data in the headers appears to support that:
     # - The second number is the row count in the file
     # - The third number is the lowest family_id value in the file
     header_struct_format = "IIII"
 
-    data_fields_structure = None
-
     def __init__(self, data_path=None, fetch_names=False):
         super().__init__(data_path=data_path)
         self.fetch_names = fetch_names
 
-        self.field_names = list(self.data_fields_structure.keys())
-
         self.header_struct = struct.Struct(
             self.byte_order + self.header_struct_format
         )
-        self.data_struct = struct.Struct(
-            self.byte_order + ''.join([field.format for field in self.data_fields_structure.values()])
-        )
 
     def process_data_tuple(self, data_tuple):
-        data_dict = OrderedDict(zip(self.field_names, data_tuple))
+        data_dict = OrderedDict(zip(list(self.fields.keys()), data_tuple))
         if 'name_id_1' in data_dict and self.fetch_names:
             data_dict.update(self.get_texts(name=data_dict['name_id_1']))
         return data_dict
@@ -152,87 +170,15 @@ class SWRDataManager(SWRBaseManager):
             return None
 
 
-class CharacterBaseDataDataManager(SWRDataManager):
-    data_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),  # starting from 576
-        ("active", FieldDef('I', FieldType.UNKNOWN)),  # maybe the active flag, always 1
-        ("producing_facility_family_id", FieldDef('I', FieldType.READ_ONLY)),  # always 0
-        ("producing_facility_family_id_one_based", FieldDef('I', FieldType.READ_ONLY)),  # always 0
-        # 48 for Mon Mothma, 49 for Leia Organa, 50 for Luke Skywalker, 51 for Han Solo, 52 for Emperor Palpatine,
-        # 52 for Darth Vader  and 56 for Minor characters
-        ("family_id", FieldDef('I', FieldType.READ_ONLY)),
-        ("name_id_1", FieldDef('H', FieldType.READ_ONLY)),  # can be used get the name from Textstrat.dll
-        ("name_id_2", FieldDef('H', FieldType.READ_ONLY)),  # always 2
-        ("alliance", FieldDef('I', FieldType.EDITABLE)),
-        ("imperial", FieldDef('I', FieldType.EDITABLE)),
-        ("construction_cost", FieldDef('I', FieldType.UNKNOWN)),  # always 0
-        ("maintenance", FieldDef('I', FieldType.UNKNOWN)),  # always 0
-        ("research_order", FieldDef('I', FieldType.UNKNOWN)),  # always 0
-        ("unknown_5", FieldDef('I', FieldType.UNKNOWN)),  # always 0
-        ("diplomacy_base", FieldDef('I', FieldType.EDITABLE)),
-        ("diplomacy_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("espionage_base", FieldDef('I', FieldType.EDITABLE)),
-        ("espionage_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("ship_research_base", FieldDef('I', FieldType.EDITABLE)),
-        ("ship_research_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("troop_research_base", FieldDef('I', FieldType.EDITABLE)),
-        ("troop_research_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("facility_research_base", FieldDef('I', FieldType.EDITABLE)),
-        ("facility_research_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("combat_base", FieldDef('I', FieldType.EDITABLE)),
-        ("combat_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("leadership_base", FieldDef('I', FieldType.EDITABLE)),
-        ("leadership_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("loyalty_base", FieldDef('I', FieldType.EDITABLE)),
-        ("loyalty_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("jedi_probability", FieldDef('I', FieldType.EDITABLE)),
-        ("known_jedi", FieldDef('I', FieldType.EDITABLE)),
-        ("jedi_level_base", FieldDef('I', FieldType.EDITABLE)),
-        ("jedi_level_variance", FieldDef('I', FieldType.EDITABLE)),
-        ("can_be_admiral", FieldDef('I', FieldType.EDITABLE)),
-        ("can_be_commander", FieldDef('I', FieldType.EDITABLE)),
-        ("can_be_general", FieldDef('I', FieldType.EDITABLE)),
-        ("wont_betray_own_side", FieldDef('I', FieldType.EDITABLE)),
-        ("can_train_jedis", FieldDef('I', FieldType.EDITABLE)),
-    ])
-
-    def process_data_tuple(self, data_tuple):
-        data_dict = OrderedDict(zip(self.field_names, data_tuple))
-        data_dict.update(
-            self.get_texts(
-                name=data_dict['name_id_1'],
-                name_general=data_dict['name_id_1'] + 28672,
-                name_commander=data_dict['name_id_1'] + 26624,
-                name_admiral=data_dict['name_id_1'] + 27648,
-            )
-        )
-        return data_dict
-
-
-class SystemFacilityTableDataDataManager(SWRDataManager):
-    header_struct_format = "III14s"
-
-    data_fields_structure = OrderedDict([
-        ("number", FieldDef('I', FieldType.READ_ONLY)),
-        ("number2", FieldDef('I', FieldType.READ_ONLY)),  # always 1
-        ("percent", FieldDef('I', FieldType.READ_ONLY)),
-        ("level", FieldDef('H', FieldType.READ_ONLY)),
-        ("unknown", FieldDef('B', FieldType.READ_ONLY)),  # always 0
-        ("family_id", FieldDef('B', FieldType.READ_ONLY)),
-    ])
-
-
 class TableDataBaseDataManager(SWRDataManager):
     header_struct_format = "III13s"
 
 
 class ProbabilityTableDataBaseManager(TableDataBaseDataManager):
-    data_fields_structure = OrderedDict([
-        ("index", FieldDef('I', FieldType.READ_ONLY)),
-        ("one", FieldDef('I', FieldType.READ_ONLY)),
-        ("score", FieldDef('i', FieldType.READ_ONLY)),
-        ("probability", FieldDef('I', FieldType.READ_ONLY)),
-    ])
+    index = FieldDef('I', FieldType.READ_ONLY)
+    one = FieldDef('I', FieldType.READ_ONLY)
+    score = FieldDef('i', FieldType.READ_ONLY)
+    probability = FieldDef('I', FieldType.READ_ONLY)
 
 
 class SimpleTableDataManager(SimpleSWRManager):
