@@ -47,18 +47,22 @@ class SWRBaseManager:
             ALL_MANAGERS.sort(key=lambda m: m.filename)
             MANAGERS_BY_FILE[cls.filename] = cls
 
-    def load_file(self):
-        header_stream = BytesIO()
-        data_stream = BytesIO()
+    def load_stream_from_file(self):
         file_stream = BytesIO()
-
         with open(self.file_path, "rb") as file_obj:
             file_stream.write(file_obj.read())
-
         file_stream.seek(0)
-        self.loaded_md5_checksum = hashlib.md5(file_stream.read()).hexdigest()
+        return file_stream
 
+    def load(self):
+        header_stream = BytesIO()
+        data_stream = BytesIO()
+
+        file_stream = self.load_stream_from_file()
+
+        loaded_md5_checksum = hashlib.md5(file_stream.read()).hexdigest()
         file_stream.seek(0)
+
         header_stream.write(file_stream.read(self.header_struct.size))
         data_stream.write(file_stream.read())
         header_stream.seek(0)
@@ -66,16 +70,13 @@ class SWRBaseManager:
 
         header = self.header_struct.unpack(header_stream.read())
 
-        if self.loaded_md5_checksum != self.expected_md5_checksum:
-            log.warning("%s appears to have been previously modified", self.file_path)
-
+        if loaded_md5_checksum != self.expected_md5_checksum:
             if header != self.expected_header:
                 raise SWRebellionEditorDataFileHeaderMismatchError(
                     f'Manager {self.__class__.__name__} expected header '
                     f'{self.expected_header} for data file , but got {header} instead.'
                 )
         else:
-            log.info('all is good')
             # if the checksums for the original files do not match, then ignore the second value.
             # Invariably, that value is an integer that corresponds with the number items/groups in the file
 
@@ -95,23 +96,27 @@ class SWRBaseManager:
             data = self.upgrade_data(data_tuple)
             self.data.append(data)
 
-    def prepare_file(self):
-        file_stream = BytesIO()
+    def prepare_output_stream(self):
+        stream = BytesIO()
         new_header = [self.expected_header[0], self.get_count()] + list(self.expected_header[2:])
 
-        file_stream.write(self.header_struct.pack(*new_header))
+        stream.write(self.header_struct.pack(*new_header))
 
         for entry in self.data:
             data_tuple = self.downgrade_data(entry)
-            file_stream.write(self.data_struct.pack(*data_tuple))
+            stream.write(self.data_struct.pack(*data_tuple))
 
-        file_stream.seek(0)
-        return file_stream
+        stream.seek(0)
+        return stream
 
-    def save_file(self):
-        file_stream = self.prepare_file()
+    def save(self):
+        stream = self.prepare_output_stream()
+        self.save_stream_to_file(stream)
+
+    def save_stream_to_file(self, stream):
+        stream.seek(0)
         with open(self.file_path, "wb") as file_obj:
-            file_obj.write(file_stream.read())
+            file_obj.write(stream.read())
 
     def get_count(self):
         return len(self.data)

@@ -11,5 +11,5 @@ def test_contents(manager_cls, snapshot):
     else:
         manager = manager_cls()
     manager.load_file()
-    if manager.loaded_md5_checksum  == manager.expected_md5_checksum:
+    if manager.loaded_md5_checksum == manager.expected_md5_checksum:
         snapshot.assert_match(manager.data)
