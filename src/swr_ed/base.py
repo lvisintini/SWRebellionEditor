@@ -35,10 +35,10 @@ class SWRBaseManager:
     def __init__(self, data_path=None):
         self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
-        self.loaded_md5_checksum = None
         self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
         self.header_count = None
         self.data = None
+        self.md5_checksum = None
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -51,6 +51,8 @@ class SWRBaseManager:
         file_stream = BytesIO()
         with open(self.file_path, "rb") as file_obj:
             file_stream.write(file_obj.read())
+        file_stream.seek(0)
+        self.md5_checksum = hashlib.md5(file_stream.read()).hexdigest()
         file_stream.seek(0)
         return file_stream
 
@@ -117,6 +119,8 @@ class SWRBaseManager:
         stream.seek(0)
         with open(self.file_path, "wb") as file_obj:
             file_obj.write(stream.read())
+        stream.seek(0)
+        self.md5_checksum = hashlib.md5(stream.read()).hexdigest()
 
     def get_count(self):
         return len(self.data)
