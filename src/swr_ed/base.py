@@ -1,25 +1,28 @@
+from abc import ABC, abstractmethod
 import hashlib
 import os
 import logging
 import struct
 from collections import OrderedDict
+from functools import cached_property
 from io import BytesIO
 
 from . import ALL_MANAGERS, MANAGERS_BY_FILE
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
-
+from .dll_wrappers import text_stra
 
 log = logging.getLogger(__name__)
 
 
 class FieldDef:
-    def __init__(self, format, type):
-        self.format = format
-        self.type = type
+    def __init__(self, struct_format, field_type, help_text=None):
+        self.format = struct_format
+        self.type = field_type
+        self.help_text = help_text
 
 
-class SWRBaseManager:
+class SWRBaseManager(ABC):
     """
     This class contains the basic facilities to load a GDATA file and parse its contents.
     It assumes that all files would have a header structure, though what that structure is would be up to subclasses
@@ -32,7 +35,12 @@ class SWRBaseManager:
     expected_md5_checksum = None
     byte_order = '<'  # we assume little-endian https://docs.python.org/3/library/struct.html#struct-alignment
 
-    def __init__(self, data_path=None):
+    @property
+    @abstractmethod
+    def data_struct(self) -> struct.Struct:
+        raise NotImplementedError
+
+    def __init__(self, data_path: str = None):
         self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
         self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
@@ -126,14 +134,25 @@ class SWRBaseManager:
         return len(self.data)
 
     def upgrade_data(self, data_tuple):
+        """
+        A method to enhance each data row after it has been unpacked from the file.
+        By default, it turns each data row into a list that is easy to manipulate.
+        This method is later overridden by subclasses that turn the output of the files
+        into dicts that are still far more useful
+        """
         return list(data_tuple)
 
     def downgrade_data(self, data):
+        """
+        This method should do the reverse of the upgrade data method.
+        It is meant to simplify data in order for it to be stored into the relevant files again.
+        """
         return data
 
 
 class SimpleSWRManager(SWRBaseManager):
     data_struct_format = None
+    data_struct = None
 
     def __init__(self, data_path=None):
         super().__init__(data_path=data_path)
@@ -141,32 +160,38 @@ class SimpleSWRManager(SWRBaseManager):
 
 
 class FieldsMeta(type):
-    def __new__(meta, classname, bases, class_dict):
+    def __new__(mcs, classname, bases, namespace):
         fields = OrderedDict()
-        for attr in list(class_dict.keys()):
-            if isinstance(class_dict[attr], FieldDef):
-                field = class_dict.pop(attr)
+        for attr in list(namespace.keys()):
+            if isinstance(namespace[attr], FieldDef):
+                field = namespace.pop(attr)
                 fields[attr] = field
 
         if fields:
-            class_dict['fields'] = fields
+            namespace['fields'] = fields
 
-        cls = type.__new__(meta, classname, bases, class_dict)
-
-        if hasattr(cls, 'fields') and hasattr(cls, 'byte_order'):
-            cls.data_struct = struct.Struct(
-                cls.byte_order + ''.join([field.format for field in cls.fields.values()])
-            )
+        cls = type.__new__(mcs, classname, bases, namespace)
 
         return cls
 
 
-class SWRDataManager(SWRBaseManager, metaclass=FieldsMeta):
+class SWRBaseFieldManagerIntermediateMeta(type(SWRBaseManager), FieldsMeta):
+    pass
 
+
+class SWRDataManager(SWRBaseManager, metaclass=SWRBaseFieldManagerIntermediateMeta):
     # The data in the headers appears to support that:
     # - The second number is the row count in the file
     # - The third number is the lowest family_id value in the file
     header_struct_format = "IIII"
+
+    fields = None
+
+    @cached_property
+    def data_struct(self):
+        return struct.Struct(
+            self.byte_order + ''.join([field.format for field in self.fields.values()])
+        )
 
     def __init__(self, data_path=None, fetch_names=False):
         super().__init__(data_path=data_path)
@@ -192,19 +217,8 @@ class SWRDataManager(SWRBaseManager, metaclass=FieldsMeta):
         return res
 
     def get_text(self, text_id):
-        #https://stackoverflow.com/questions/23263599/how-to-extract-128x128-icon-bitmap-data-from-exe-in-python
-        #https://github.com/team5499/pie-2015/blob/master/VrepRobotCPortable/Python/App2/Lib/site-packages/py2exe
-        #/resources/StringTables.py
-        try:
-            import win32api
-            import pywintypes
-        except ModuleNotFoundError:
-            return None
-        try:
-            textstra_lib = win32api.LoadLibrary(os.path.join(self.data_path, "TEXTSTRA.DLL"))
-            return win32api.LoadString(textstra_lib, text_id)
-        except pywintypes.error:
-            return None
+        if text_stra:
+            return text_stra.get_text(text_id)
 
 
 class TableDataManager(SWRDataManager):

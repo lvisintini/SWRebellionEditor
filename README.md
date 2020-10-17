@@ -19,6 +19,6 @@ from swr_ed.base import ALL_MANAGERS
 import json 
 for manager_class in ALL_MANAGERS: 
     manager = manager_class('/home/lvisintini/SWR/REBELLION/') 
-    manager.load_file() 
+    manager.load() 
     print(json.dumps(manager.data, indent=2))
 ``` 

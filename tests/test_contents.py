@@ -13,3 +13,5 @@ def test_contents(manager_cls, snapshot):
     manager.load()
     if manager.md5_checksum == manager.expected_md5_checksum:
         snapshot.assert_match(manager.data)
+    else:
+        pytest.skip()

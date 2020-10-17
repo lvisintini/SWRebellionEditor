@@ -48,3 +48,7 @@ Traceback (most recent call last):
   File "<input>", line 1, in <module>
 pywintypes.error: (1814, 'LoadString', 'The specified resource name cannot be found in the image file.')
 win32api.LoadString(hlib, 10051)
+
+
+https://stackoverflow.com/questions/23263599/how-to-extract-128x128-icon-bitmap-data-from-exe-in-python
+https://github.com/team5499/pie-2015/blob/master/VrepRobotCPortable/Python/App2/Lib/site-packages/py2exe/resources/StringTables.py

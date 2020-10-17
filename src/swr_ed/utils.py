@@ -15,13 +15,13 @@ def list_unprocessed_files():
 def print_csv(manager_class):
     if issubclass(manager_class, SWRDataManager):
         manager = manager_class(fetch_names=True)
-        manager.load_file()
+        manager.load()
         print('"' + '","'.join(manager.fields.keys()) + '"')
         for row in manager.data:
             print('"' + '","'.join([str(v) for v in row.values()]) + '"')
     else:
         manager = manager_class()
-        manager.load_file()
+        manager.load()
         for row in manager.data:
             print('"' + '","'.join([str(v) for v in row]) + '"')
 
