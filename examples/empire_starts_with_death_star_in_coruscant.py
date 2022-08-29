@@ -1,7 +1,9 @@
 from swr_ed import MANAGERS_BY_FILE
 
+game_directory = 'C:\Steam\steamapps\common\Star Wars - Rebellion'
+
 manager_class = MANAGERS_BY_FILE['CMUNEFTB.DAT']
-manager = manager_class()
+manager = manager_class(game_directory)
 manager.load()
 
 

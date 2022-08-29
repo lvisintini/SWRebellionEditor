@@ -10,7 +10,7 @@ from io import BytesIO
 from . import ALL_MANAGERS, MANAGERS_BY_FILE
 from .exceptions import SWRebellionEditorDataFileHeaderMismatchError
 from .constants import FieldType
-from .dll_wrappers import text_stra
+from .dll_wrappers import TextStraWrapper
 
 log = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ class SWRBaseManager(ABC):
         raise NotImplementedError
 
     def __init__(self, data_path: str = None):
-        self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
+        self.data_path = data_path
         self.file_path = os.path.join(self.data_path, self.file_location, self.filename)
         self.header_struct = struct.Struct(self.byte_order + self.header_struct_format)
         self.header_count = None
@@ -193,17 +193,17 @@ class SWRDataManager(SWRBaseManager, metaclass=SWRBaseFieldManagerIntermediateMe
             self.byte_order + ''.join([field.format for field in self.fields.values()])
         )
 
-    def __init__(self, data_path=None, fetch_names=False):
+    def __init__(self, data_path=None):
         super().__init__(data_path=data_path)
-        self.fetch_names = fetch_names
 
         self.header_struct = struct.Struct(
             self.byte_order + self.header_struct_format
         )
+        self.text_stra = TextStraWrapper(self.data_path)
 
     def upgrade_data(self, data_tuple):
         data_dict = OrderedDict(zip(list(self.fields.keys()), data_tuple))
-        if 'name_id_1' in data_dict and self.fetch_names:
+        if 'name_id_1' in data_dict:
             data_dict.update(self.get_texts(name=data_dict['name_id_1']))
         return data_dict
 
@@ -217,8 +217,7 @@ class SWRDataManager(SWRBaseManager, metaclass=SWRBaseFieldManagerIntermediateMe
         return res
 
     def get_text(self, text_id):
-        if text_stra:
-            return text_stra.get_text(text_id)
+        return self.text_stra.get_text(text_id)
 
 
 class TableDataManager(SWRDataManager):

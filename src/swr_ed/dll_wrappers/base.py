@@ -15,5 +15,5 @@ class DLLBaseWrapper(ABC):
         raise NotImplemented()
 
     def __init__(self, data_path: str = None):
-        self.data_path = data_path or os.getenv('SW_REBELLION_DIR')
+        self.data_path = data_path
         self.file_path = os.path.join(self.data_path, self.relative_path)
