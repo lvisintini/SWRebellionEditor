@@ -1,0 +1,7 @@
+To finish this project:
+
+- Field comments to help_text in the field definition
+- UI with PyQT
+- DDL manipulation with Kaitai Struct library (https://formats.kaitai.io/windows_resource_file/python.html) if possible
+- Announce on discord
+
